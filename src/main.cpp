@@ -10,7 +10,9 @@
 #include "utils.hpp"
 #include "tourelle.hpp"
 #include "ultrasson.hpp"
+#ifdef SIMULATION
 #include "simu_motorisation.hpp"
+#endif
 #include "motorisation.hpp"
 #include <csignal>
 #include <iostream>
@@ -105,8 +107,6 @@ int main (int argc, char *argv[]) {
     motorisation.avance(objX, objY, objTheta);
     motorisation.stop_force();
     motorisation.avance(objX, objY, objTheta);
-
-    simu_motorisation.show_ordres(4);
 
     //double t=0;
   while (!ragequit) {

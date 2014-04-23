@@ -22,8 +22,7 @@
 #define BLOQUE          8
 #define STATUS_ROB      10
 
-#include "utils.hpp"
-#include "i2c_bus.hpp"
+//#include "utils.hpp"
 #include "i2c_slave.hpp"
 
 #ifdef SIMULATION

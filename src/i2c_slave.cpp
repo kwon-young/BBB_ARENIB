@@ -3,7 +3,7 @@
 ///\file i2c_slave.cpp
 ///\author Julien De Loor
 
-#include "i2c_bus.hpp"
+//#include "i2c_bus.hpp"
 #include "i2c_slave.hpp"
 
 #ifdef SIMULATION
@@ -20,15 +20,6 @@ _bus(&bus),
 _addr(addr)
 {
   int r;
-  if (_derivated_fd != -1)
-  {
-    RESTART_SYSCALL(r, close(_fd));
-    if (r==-1) {
-      printf("close %s", _bus->name);
-      perror("");
-    }
-  }
-  
   _bus=&bus;
   _derivated_fd = bus.request();
   
@@ -49,9 +40,9 @@ i2c_slave::~i2c_slave() {
   if (_derivated_fd != -1)
   {
     int r;
-    RESTART_SYSCALL(r, close(_fd));
+    RESTART_SYSCALL(r, close(_derivated_fd));
     if (r==-1) {
-      printf("close %s", bus->name);
+      printf("close %s", _bus->name);
       perror("");
     }
   }
@@ -69,7 +60,7 @@ int i2c_slave::write(const uint8_t *buffer, int length)
     int r;
     if (_derivated_fd == -1) return -1;
 
-    RESTART_SYSCALL(r, write(_derivated_fd, buffer, length));
+    RESTART_SYSCALL(r, ::write(_derivated_fd, buffer, length));
     if (r==-1) {
       perror("in i2c_slave write");
       return -1;
@@ -91,12 +82,12 @@ int i2c_slave::fast_read(uint8_t cmd, uint8_t *buffer, int length)
   int r;
   if (_derivated_fd == -1) return -1;
   
-  RESTART_SYSCALL(r, write(_derivated_fd, &cmd, 1));
+  RESTART_SYSCALL(r, ::write(_derivated_fd, &cmd, 1));
   if (r==-1) {
     perror("in i2c_slave fast_read : write cmd");
     return -1;
   }
-  RESTART_SYSCALL(r, read(_derivated_fd, buffer, length));
+  RESTART_SYSCALL(r, ::read(_derivated_fd, buffer, length));
   if (r==-1) {
     perror("in i2c_slave fast_read : read data");
     return -1;
@@ -118,12 +109,12 @@ int i2c_slave::write_read( const uint8_t *out, int lout,
   int r;
   if (_derivated_fd == -1) return -1;
   
-  RESTART_SYSCALL(r, write(_derivated_fd, out, lout));
+  RESTART_SYSCALL(r, ::write(_derivated_fd, out, lout));
   if (r==-1) {
     perror("in i2c_slave write_read : write cmd");
     return -1;
   }
-  RESTART_SYSCALL(r, read(_derivated_fd, in, lin));
+  RESTART_SYSCALL(r, ::read(_derivated_fd, in, lin));
   if (r==-1) {
     perror("in i2c_slave write_read : read data");
     return -1;

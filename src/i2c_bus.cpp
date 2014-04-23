@@ -26,7 +26,6 @@ int i2c_bus::do_operation(unsigned int bytes)
 #else
 
 i2c_bus::i2c_bus(int id) {
-  int r;
   snprintf(name, sizeof(name), "/dev/i2c-%d", id);
   RESTART_SYSCALL(_fd, open(name, O_RDWR));
   if (_fd==-1) {

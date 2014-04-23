@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <cstdint>
 #include <climits>
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
+#include "pstdint.hpp"
 
 #ifndef SIMULATION
 

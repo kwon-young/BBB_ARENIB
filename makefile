@@ -3,7 +3,7 @@ CXX=g++
 DEBUG=yes
 STATIC=yes
 
-CIBLE=simu
+CIBLE=BBB
 EXE=$(CIBLE)
 EXEC=$(EXE)
 SRC_DIR=src
@@ -19,16 +19,18 @@ INC_CIBLE=$(wildcard $(INC_DIR_CIBLE)/*.hpp)
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
 CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -D SFML_STATIC=1
-
-ifeq ($(CIBLE), simu)
-  CXXFLAGS+= -D SIMULATION=1
-endif
 ifeq ($(DEBUG), yes)
   CXXFLAGS+= -g
   LDFLAGS= -lsfml-network-s-d -lsfml-system-s-d
 else 
   CXXFLAGS+= -O2
   LDFLAGS= -lsfml-network-s -lsfml-system-s
+endif
+
+ifeq ($(CIBLE), simu)
+  CXXFLAGS+= -D SIMULATION=1
+else
+  LDFLAGS+= -lpthread
 endif
 
 all:$(EXEC)

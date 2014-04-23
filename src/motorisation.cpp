@@ -1,6 +1,8 @@
 
 #include "motorisation.hpp"
+#ifdef SIMULATION
 #include "simu_motorisation.hpp"
+#endif
 
 Motorisation::Motorisation(i2c_bus &mybus, 
                            uint8_t slave_addr, 
@@ -32,7 +34,7 @@ Motorisation::~Motorisation() {
 
 int Motorisation::stop_force() {
   i2c_envoie.Type=STOP_F;
-  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   //Surcouche simulation
   #ifdef SIMULATION
   simu_asserv->recv_stop_force();
@@ -46,7 +48,7 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   commande_etat_courant.Y=obj_Y;
   commande_etat_courant.Theta=obj_Theta;
   commandeToI2c_packet(commande_etat_courant, i2c_envoie);
-  this->write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
+  write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
   
   //Surcouche simulation
   #ifdef SIMULATION
@@ -58,8 +60,12 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
 }
   
 int Motorisation::get_position_state() {
+  int r;
   i2c_envoie.Type=POSITION_R;
-  fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  r=fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  if (r==-1) {
+    return r;
+  }
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
   
   //Surcouche simulation
@@ -76,7 +82,7 @@ int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
-  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   
   //Surcouche simulation
   #ifdef SIMULATION
@@ -93,7 +99,7 @@ int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
-  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   
   //Surcouche simulation
   #ifdef SIMULATION
