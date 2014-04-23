@@ -14,7 +14,7 @@
 #include <cstdint>
 #include <climits>
 
-
+#define PI 3.14159265
 
 #define RESTART_SYSCALL(result,syscall) \
         do { (result)=(syscall);} \

@@ -24,19 +24,36 @@ int main (int argc, char *argv[]) {
     }
   }
   Robot mon_robot(100.0, 50.0, 1, 0x30);
-  /*
-  mon_robot.asserv.avance(-10, -10, -3);
-  mon_robot.asserv.set_position(-10.0, -10.0, -3.0);
-  mon_robot.asserv.avance(-10, -10, 3);
-  mon_robot.asserv.get_position();
-  mon_robot.asserv.stop_force();
-  mon_robot.asserv.status_robot();
-  */
+  //mon_robot.asserv.set_position(0, 0, 0);
+  mon_robot.asserv.avance(0, 200, -PI/2.0);
+  sleep(1);
+  mon_robot.asserv.avance(200, 200, -2.0*PI/2.0);
+  sleep(1);
+  mon_robot.asserv.avance(200, 0, PI/2.0);
+  sleep(1);
+  mon_robot.asserv.avance(0, 0, 0.0);
+  sleep(1);
 
-  Tourelle mytourelle(1, 0x45, 6);
-  printf("%c\n", mytourelle.get_error());
-  mytourelle.get_datas();
-  
+  while(mon_robot.asserv.status_robot()!=STOP) {
+  sleep(1);
+  }
+  mon_robot.asserv.get_position();
+  mon_robot.asserv.avance(0, 200, -PI/2.0);
+  sleep(1);
+  while(mon_robot.asserv.status_robot()!=STOP) {
+  sleep(1);
+  }
+  mon_robot.asserv.get_position();
+  while(mon_robot.asserv.status_robot()!=STOP) {
+  sleep(1);
+  }
+  mon_robot.asserv.get_position();
+  /*
+     Tourelle mytourelle(1, 0x45, 6);
+     printf("%c\n", mytourelle.get_error());
+     mytourelle.get_datas();
+   */
+
 #ifdef SIMULATION
 
   sf::RenderWindow window(sf::VideoMode(LARGEUR_TABLE, HAUTEUR_TABLE), "SFML works!");
@@ -58,24 +75,24 @@ int main (int argc, char *argv[]) {
   }
 
 #else
-/*
-  I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
-  uint8_t temp_hex[2];
-  myLM75->temp_floattohex(temp_hex, 25.5);
+  /*
+     I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
+     uint8_t temp_hex[2];
+     myLM75->temp_floattohex(temp_hex, 25.5);
 
-  printf("%x %x\n", temp_hex[0], temp_hex[1]);
-  printf("%f\n", myLM75->temp_hextofloat(temp_hex));
+     printf("%x %x\n", temp_hex[0], temp_hex[1]);
+     printf("%f\n", myLM75->temp_hextofloat(temp_hex));
 
-  printf("%.1f\n", myLM75->get_temp());
+     printf("%.1f\n", myLM75->get_temp());
 
-  Ultrasson * myUltrasson= new Ultrasson(1, 0x10, 2);
-  while(1) {
-    myUltrasson->get_distances();
-    usleep(5000);
-    usleep(5000);
-    usleep(5000);
-  }
-*/
+     Ultrasson * myUltrasson= new Ultrasson(1, 0x10, 2);
+     while(1) {
+     myUltrasson->get_distances();
+     usleep(5000);
+     usleep(5000);
+     usleep(5000);
+     }
+   */
 #endif
   return 0;
 
