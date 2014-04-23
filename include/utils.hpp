@@ -1,7 +1,8 @@
-#ifndef utils.hpp
-#define utils.hpp
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -19,3 +20,5 @@
 
 
 #endif
+
+
