@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "i2c_interface.hpp"
 #include "i2c_LM75.hpp"
+#include "i2c_ultrasson.hpp"
 
 int main (int argc, char *argv[]) {
   for (int i=0; i<argc; i++) {
@@ -21,6 +22,10 @@ int main (int argc, char *argv[]) {
   printf("%f\n", myLM75->temp_hextofloat(temp_hex));
 
   printf("%.1f\n", myLM75->get_temp());
+
+  I2c_ultrasson * myUltrasson= new I2c_ultrasson(1, 0x10);
+  printf("%1.f\n", myUltrasson->get_distance());
+
   /*
   int i2c_bus=1;
   int i2c_addr=0x48;
