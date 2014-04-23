@@ -47,6 +47,7 @@ int main (int argc, char *argv[]) {
   }
 
 #else
+/*
   I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
   uint8_t temp_hex[2];
   myLM75->temp_floattohex(temp_hex, 25.5);
@@ -60,6 +61,7 @@ int main (int argc, char *argv[]) {
   printf("%1.f\n", myUltrasson->get_distance());
   printf("%d\n", sizeof(uint8_t));
 
+*/
 #endif
   return 0;
 

@@ -18,7 +18,7 @@ float I2c_ultrasson::get_distance() {
     return 0.0;
   }
   int distance_int;
-  for (int i=0; i<sizeof(distance); i++) {
+  for (unsigned int i=0; i<sizeof(distance); i++) {
     distance_int &= distance[i] << (i*8);
   }
   return (float)distance_int;
