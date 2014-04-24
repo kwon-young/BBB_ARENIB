@@ -1,9 +1,14 @@
 
 #include "motorisation.hpp"
 
-Motorisation::Motorisation(unsigned int etat, double posX, double posY, double posTheta) :
+Motorisation::Motorisation(int bus, 
+                           uint8_t slave_addr, 
+                           unsigned int etat, 
+                           double posX, 
+                           double posY, 
+                           double posTheta) :
 #ifndef SIMULATION
-  my_i2c_interface(1, 0x30)
+I2c_interface(bus, slave_addr)
 #endif
 {
   commande_etat_courant.Type=etat;
@@ -23,7 +28,7 @@ Motorisation::~Motorisation() {
 int Motorisation::stop_force() {
   i2c_envoie.Type=STOP_F;
 #ifndef SIMULATION
-  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+  i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
 #endif
   return 0;
 }
@@ -31,7 +36,7 @@ int Motorisation::stop_force() {
 int Motorisation::status_robot() {
   i2c_envoie.Type=STATUS_ROB;
 #ifndef SIMULATION
-  my_i2c_interface.i2c_read(i2c_envoie.Type, &i2c_envoie.Type, 1);
+  i2c_read(i2c_envoie.Type, &i2c_envoie.Type, 1);
 #endif
   commande_etat_courant.Type=i2c_envoie.Type;
   printf("status_courant\n");
@@ -46,7 +51,7 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   commande_etat_courant.Theta=obj_Theta;
   commandeToI2c_packet(commande_etat_courant, i2c_envoie);
 #ifndef SIMULATION
-  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+  i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
 #endif
   return 0;
 }
@@ -54,7 +59,7 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
 int Motorisation::get_position() {
   i2c_envoie.Type=POSITION_R;
 #ifndef SIMULATION
-  my_i2c_interface.i2c_read(i2c_envoie.Type, i2c_envoie.X, 12);
+  i2c_read(i2c_envoie.Type, i2c_envoie.X, 12);
 #endif
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
   printf("etat_courant\n");
@@ -71,7 +76,7 @@ int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
 #ifndef SIMULATION
-  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+  i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
 #endif
   return 0;
 }
@@ -84,13 +89,13 @@ int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
 #ifndef SIMULATION
-  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+  i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
 #endif
   return 0;
 }
 
-int Motorisation::commandeToI2c_packet(const struct commande &myCommande, 
-                                       struct i2c_packet &myI2c_packet) {
+int Motorisation::commandeToI2c_packet(const Commande &myCommande, 
+                                       I2c_packet &myI2c_packet) {
   myI2c_packet.Type=myCommande.Type;
   uint8_t signe[3]={0};
   uint32_t masque=0xFF;
@@ -121,8 +126,8 @@ int Motorisation::commandeToI2c_packet(const struct commande &myCommande,
   return 0;
 }
 
-int Motorisation::i2c_packetToCommande(const struct i2c_packet &myI2c_packet,
-                                       struct commande &myCommande) {
+int Motorisation::i2c_packetToCommande(const I2c_packet &myI2c_packet,
+                                       Commande &myCommande) {
   myCommande.Type=myI2c_packet.Type;
   int32_t temp[3]={0};
   double signe[3]={1};

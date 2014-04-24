@@ -7,11 +7,12 @@
 #else
 #include "i2c_interface.hpp"
 #include "i2c_LM75.hpp"
-#include "i2c_ultrasson.hpp"
 #endif
 
 #include "utils.hpp"
 #include "robot.hpp"
+#include "tourelle.hpp"
+#include "ultrasson.hpp"
 
 int main (int argc, char *argv[]) {
   for (int i=0; i<argc; i++) {
@@ -22,15 +23,19 @@ int main (int argc, char *argv[]) {
       printf ("argc = %d : %s\n", i, argv[i]);
     }
   }
-  Robot mon_robot(100.0, 50.0);
+  Robot mon_robot(100.0, 50.0, 1, 0x30);
   /*
   mon_robot.asserv.avance(-10, -10, -3);
   mon_robot.asserv.set_position(-10.0, -10.0, -3.0);
   mon_robot.asserv.avance(-10, -10, 3);
   mon_robot.asserv.get_position();
-  */
   mon_robot.asserv.stop_force();
   mon_robot.asserv.status_robot();
+  */
+
+  Tourelle mytourelle(1, 0x45, 6);
+  printf("%c\n", mytourelle.get_error());
+  mytourelle.get_datas();
   
 #ifdef SIMULATION
 
@@ -63,16 +68,14 @@ int main (int argc, char *argv[]) {
 
   printf("%.1f\n", myLM75->get_temp());
 
-  I2c_ultrasson * myUltrasson= new I2c_ultrasson(1, 0x10);
+  Ultrasson * myUltrasson= new Ultrasson(1, 0x10, 2);
   while(1) {
-    myUltrasson->get_distance();
-    //printf("%2.2lf\n", myUltrasson->get_distance());
+    myUltrasson->get_distances();
     usleep(5000);
     usleep(5000);
     usleep(5000);
   }
 */
-
 #endif
   return 0;
 

@@ -20,7 +20,7 @@ class I2c_interface {
     ///Il lie un descripteur de fichier a un bus i2c et a une adresse esclave.
     ///\param[in] bus numero du bus i2c, sur une BBB debian c'est 1
     ///\param[in] slave_addr adresse de l'esclave
-    I2c_interface(int bus, char slave_addr);
+    I2c_interface(int bus, uint8_t slave_addr);
 
     ///\brief Constructeur par recopie
     ///Le constructeur se charge d'initialiser le bus i2c comme il faut.
@@ -48,7 +48,7 @@ class I2c_interface {
     
   protected:
     int _bus;           //!<bus i2c
-    char _slave_addr;   //!<adresse de l'esclave
+    uint8_t _slave_addr;   //!<adresse de l'esclave
     char _name_bus[42]; //!<nom du bus i2c deduit de _bus
     int _fd;            //!<descripteur de fichier permettant d'ecrire et lire dans le bus i2c
 };

@@ -27,36 +27,35 @@
 #include "i2c_interface.hpp"
 #endif
 
-#ifndef SIMULATION
 ///\struct i2c_packet
 ///\brief permet de traduire plus facilement la structure commande pour l'envoyer en i2c
 ///Le but de cette structure est de traduire la structure Commande en format de donnees facile a envoyer pour l'i2c, qui n'envoie que des paquets d'octet.
 ///la precision du codage peut aller jusqu'au micron pour X et Y
-struct i2c_packet {
+typedef struct _i2c_packet {
   uint8_t Type;     //!<peut representer un etat du robot definie plus haut
   uint8_t X[4];     //!<position en X, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
   uint8_t Y[4];     //!<position en Y, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
   uint8_t Theta[4]; //!<position en Theta, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10 000eme de radian
-};
-
-#endif
+}I2c_packet;
 
 ///\struct commande
 ///\brief permet de representer soit l'etat du robot ou bien un ordre pour le robot
 ///Le but de cette structure est de soit representer l'etat ou un ordre du robot de facon tres precise en utilisant des doubles
-struct commande
+typedef struct _commande
 {
   uint8_t Type;   //!<peut representer un etat du robot definie plus haut
   double X;       //!<position en X
   double Y;       //!<position en Y
   double Theta;   //!<position en Theta
-};
+}Commande;
 
 ///\class Motorisation
 ///\brief Classe permettant de communiquer avec l'asservisssment
 ///Cette classe fait le pont entre la vrai carte d'asservissement et le haut niveau.
 ///Cette classe sait communiquer en i2c avec l'asservissment
-class Motorisation {
+#ifndef SIMULATION
+class Motorisation : public I2c_interface {
+#endif
 
   public:
     ///\brief Constructeur par defaut
@@ -64,8 +63,13 @@ class Motorisation {
     ///\param[in] posX position initial en X
     ///\param[in] posY position initial en Y
     ///\param[in] posTheta position initial en Theta
-    Motorisation(unsigned int etat, double posX, double posY, double posTheta);
-    ~Motorisation();
+    Motorisation( int bus, 
+                  uint8_t slave_addr, 
+                  unsigned int etat, 
+                  double posX, 
+                  double posY, 
+                  double posTheta);
+    virtual ~Motorisation();
 
     ///\brief stop le robot de force
     ///on vient forcer l'etat et la position de l'asservissment du robot en i2c à 0
@@ -108,22 +112,19 @@ class Motorisation {
     ///cette fonction convertie les membres X, Y, Theta codes en double dans la structure commande en uint8_t[4] dans la structure i2c_packet
     ///\param[in] myCommande reference constante sur la structure commande que l'on veut traduire
     ///\param[out] myI2c_packet reference sur la structure i2c_packet de destination
-    int commandeToI2c_packet(const struct commande &myCommande, struct i2c_packet &myI2c_packet);
+    int commandeToI2c_packet(const Commande &myCommande, I2c_packet &myI2c_packet);
 
     ///\brief convertie une structure i2c_packet en commande 
     ///cette fonction convertie les membres X, Y, Theta codes en uint8_t[4] dans la structure i2c_packet en double dans la structure commande
     ///\param[in] myI2c_packet reference constante sur la structure i2c_packet que l'on veut traduire
     ///\param[out] myCommande reference sur la structure commande de destination
-    int i2c_packetToCommande(const struct i2c_packet &myI2c_packet, struct commande &myCommande);
+    int i2c_packetToCommande(const I2c_packet &myI2c_packet, Commande &myCommande);
 
     void update();
 
-#ifndef SIMULATION
-    I2c_interface my_i2c_interface;//!<composition de la classe i2c_interface
-#endif
-    struct i2c_packet i2c_envoie; //!<structure i2c_packet qui sert a envoyer des octets sur le bus i2c
-    struct commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
-    struct commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
+    I2c_packet i2c_envoie; //!<structure i2c_packet qui sert a envoyer des octets sur le bus i2c
+    Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
+    Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
 };
 
 #endif

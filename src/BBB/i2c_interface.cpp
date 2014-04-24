@@ -1,7 +1,7 @@
 
 #include "i2c_interface.hpp"
 
-I2c_interface::I2c_interface(int bus, char slave_addr) :
+I2c_interface::I2c_interface(int bus, uint8_t slave_addr) :
 _bus(bus),
 _slave_addr(slave_addr)
 {

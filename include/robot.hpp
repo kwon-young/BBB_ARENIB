@@ -7,7 +7,7 @@
 
 class Robot {
   public:
-    Robot(double l, double h);
+    Robot(double l, double h, int i2c_bus, uint8_t asserv_addr);
     ~Robot();
     
 #ifdef SIMULATION
