@@ -52,7 +52,7 @@ I2c_interface::~I2c_interface() {
   }
 }
 
-void I2c_interface::i2c_read(char reg_addr, char * buffer, int length) {
+int I2c_interface::i2c_read(uint8_t reg_addr, uint8_t * buffer, int length) {
   int r;
 
   i2c_write(reg_addr);
@@ -60,12 +60,14 @@ void I2c_interface::i2c_read(char reg_addr, char * buffer, int length) {
   RESTART_SYSCALL(r, read(_fd, buffer, length));
   if (r!=length) {
     perror("in i2c_interface read : read data");
+    return -1;
   }
+  return 0;
 }
 
-void I2c_interface::i2c_write(char reg_addr, char *buffer, int length) {
+int I2c_interface::i2c_write(uint8_t reg_addr, uint8_t *buffer, int length) {
   
-  char *wr_buf = (char *)malloc(length+1);
+  uint8_t *wr_buf = (uint8_t *)malloc(sizeof(uint8_t)*(length+1));
   int r;
   wr_buf[0]=reg_addr;
 
@@ -75,12 +77,14 @@ void I2c_interface::i2c_write(char reg_addr, char *buffer, int length) {
       buffer++;
     }
   }
-
   length++;
   RESTART_SYSCALL(r, write(_fd, wr_buf, length));
   if (r!=length) {
     perror("in i2c_interface read : write start bit");
+    free(wr_buf);
+    return -1;
   }
   free(wr_buf);
+  return 0;
 }
 

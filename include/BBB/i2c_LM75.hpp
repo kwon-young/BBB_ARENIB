@@ -12,11 +12,11 @@
 class I2c_LM75 : public I2c_interface {
 
   public:
-    I2c_LM75(int bus, char slave_addr);
+    I2c_LM75(int bus, uint8_t slave_addr);
     virtual ~I2c_LM75();
 
-    float temp_hextofloat(char * temp_hex);
-    void temp_floattohex(char * temp_hex, float temp_float);
+    float temp_hextofloat(uint8_t * temp_hex);
+    void temp_floattohex(uint8_t * temp_hex, float temp_float);
 
     float get_temp();
   private:

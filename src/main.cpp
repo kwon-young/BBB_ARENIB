@@ -23,6 +23,8 @@ int main (int argc, char *argv[]) {
     }
   }
   Robot mon_robot(100.0, 50.0);
+  mon_robot.asserv.avance_tourne(-10, -10, -10);
+  mon_robot.asserv.get_position();
   
 #ifdef SIMULATION
 
@@ -46,7 +48,7 @@ int main (int argc, char *argv[]) {
 
 #else
   I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
-  char temp_hex[2];
+  uint8_t temp_hex[2];
   myLM75->temp_floattohex(temp_hex, 25.5);
 
   printf("%x %x\n", temp_hex[0], temp_hex[1]);
@@ -56,34 +58,8 @@ int main (int argc, char *argv[]) {
 
   I2c_ultrasson * myUltrasson= new I2c_ultrasson(1, 0x10);
   printf("%1.f\n", myUltrasson->get_distance());
+  printf("%d\n", sizeof(uint8_t));
 
-  /*
-     int i2c_bus=1;
-     int i2c_addr=0x48;
-     int temp_int;
-     float temp_float;
-     char temp[2], config[1];
-
-     I2c_interface * my_interface=new I2c_interface(i2c_bus, i2c_addr);
-
-     my_interface->i2c_read(0x0, temp, 2);
-
-     temp_int=temp[0];
-     if (temp[0]>>7) {
-     temp_int*=-1;
-     temp_int&=~(1<<7);
-     }
-
-     temp_float=temp_int;
-     if (temp[1]>>7) temp_float+=0.5;
-     printf("il fait %.1f degree celsius\n", temp_float);
-
-     config[0]=1;
-     my_interface->i2c_write(0x1, config, 1);
-     config[0]=0xf;
-     my_interface->i2c_read(0x1, config, 1);
-     printf("config du capteur temp : %d\n", config[0]);
-     */
 #endif
   return 0;
 

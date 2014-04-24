@@ -3,7 +3,7 @@
 #define ROBOT_HPP
 
 #include "utils.hpp"
-
+#include "motorisation.hpp"
 
 class Robot {
   public:
@@ -21,6 +21,7 @@ class Robot {
     double largeur;
     double hauteur;
 #endif
+    Motorisation asserv;
 };
 
 #endif

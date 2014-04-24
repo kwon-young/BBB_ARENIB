@@ -11,6 +11,8 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include <unistd.h>
+#include <cstdint>
+#include <climits>
 
 
 

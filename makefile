@@ -3,7 +3,7 @@ CXX=g++
 DEBUG=yes
 STATIC=yes
 
-CIBLE=simu
+CIBLE=BBB
 EXE=$(CIBLE)
 SRC_DIR=src
 SRC_DIR_CIBLE=$(SRC_DIR)/$(CIBLE)
@@ -23,16 +23,21 @@ OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
 ifeq ($(DEBUG), yes)
   EXEC=$(EXE)
 #  EXEC=$(DBG_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -DSIMULATION 
+  CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -std=c++0x 
+  #CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -std=c++0x -D SIMULATION
 ifeq ($(STATIC), yes)
-  LDFLAGS= -L"libwin32" -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+  ifeq ($(CIBLE), simu)
+    LDFLAGS= -L"libwin32" -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+  else
+    LDFLAGS= 
+  endif
 else
   LDFLAGS= -L"libwin32" -lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 endif
 else
   EXEC=$(EXE)
 #  EXEC=$(REL_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I$(INC_DIR) -DSIMULATION 
+  CXXFLAGS= -W -Wall -I$(INC_DIR)
 ifeq ($(STATIC), yes)
   LDFLAGS= -L"libwin32" -lsfml-graphics-s -lsfml-window-s -lsfml-system-s 
 else
@@ -56,9 +61,9 @@ build/%.o: $(SRC_DIR)/%.cpp $(INC) $(INC_CIBLE)
 	@echo Compilation C++ $< to $@
 	g++  -c $< -o $@ $(CXXFLAGS)
 
-$(EXEC):$(OBJ)
-	@echo linkage allo $(OBJ)
-	$(CXX) -o $@ $(OBJ) $(LDFLAGS)
+$(EXEC):$(OBJ) $(OBJ_CIBLE)
+	@echo -----LINKAGE-----
+	$(CXX) -o $@ $(OBJ) $(OBJ_CIBLE) $(LDFLAGS)
 
 .PHONY : clean run
 
@@ -66,4 +71,4 @@ run:
 	$(EXEC)
 
 clean:
-	rm -rf $(OBJ_DIR)/*.o */*.exe *~ */*~
+	rm -rf $(OBJ_DIR)/*.o *.exe *~ */*~ $(CIBLE)

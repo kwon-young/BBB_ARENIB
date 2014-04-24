@@ -11,8 +11,8 @@ class I2c_interface {
     I2c_interface(const I2c_interface &my_i2c_interface);
     virtual ~I2c_interface();
 
-    void i2c_write(char reg_addr, char *buffer=NULL, int length=0);
-    void i2c_read(char reg_addr, char *buffer, int length);
+    int i2c_write(uint8_t reg_addr, uint8_t *buffer=NULL, int length=0);
+    int i2c_read(uint8_t reg_addr, uint8_t *buffer, int length);
 
     
   protected:

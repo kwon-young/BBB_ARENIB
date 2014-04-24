@@ -3,11 +3,12 @@
 
 Robot::Robot(double l, double h) :
 #ifdef SIMULATION
-surface_robot(sf::Vector2f(l, h))
+surface_robot(sf::Vector2f(l, h)),
 #else
 largeur(l),
-hauteur(h)
+hauteur(h),
 #endif
+asserv(STOP, 0.0, 0.0, 0.0)
 {
 }
 
