@@ -11,16 +11,19 @@ I2c_ultrasson::~I2c_ultrasson() {
 }
 
 
-float I2c_ultrasson::get_distance() {
+double I2c_ultrasson::get_distance() {
   uint8_t distance[10]={0};
   int r=i2c_read('r', distance, sizeof(distance));
   if (r==-1) {
-    return 0.0;
+    return -1;
   }
   int distance_int;
-  for (unsigned int i=0; i<sizeof(distance); i++) {
-    distance_int &= distance[i] << (i*8);
-  }
-  return (float)distance_int;
+
+  distance_int = (distance[1] << 8) | distance[0];
+  distance_int += (distance[5] << 8) | distance[4];
+  double distance_double=(double)distance_int;
+  distance_double *=(5.0/(1024.0*2.0));
+  printf("%1.2lf\n", distance_double);
+  return (double)distance_int;
 }
 

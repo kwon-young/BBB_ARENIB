@@ -23,8 +23,14 @@ int main (int argc, char *argv[]) {
     }
   }
   Robot mon_robot(100.0, 50.0);
-  mon_robot.asserv.avance_tourne(-10, -10, -10);
+  /*
+  mon_robot.asserv.avance(-10, -10, -3);
+  mon_robot.asserv.set_position(-10.0, -10.0, -3.0);
+  mon_robot.asserv.avance(-10, -10, 3);
   mon_robot.asserv.get_position();
+  */
+  mon_robot.asserv.stop_force();
+  mon_robot.asserv.status_robot();
   
 #ifdef SIMULATION
 
@@ -58,10 +64,15 @@ int main (int argc, char *argv[]) {
   printf("%.1f\n", myLM75->get_temp());
 
   I2c_ultrasson * myUltrasson= new I2c_ultrasson(1, 0x10);
-  printf("%1.f\n", myUltrasson->get_distance());
-  printf("%d\n", sizeof(uint8_t));
-
+  while(1) {
+    myUltrasson->get_distance();
+    //printf("%2.2lf\n", myUltrasson->get_distance());
+    usleep(5000);
+    usleep(5000);
+    usleep(5000);
+  }
 */
+
 #endif
   return 0;
 

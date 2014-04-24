@@ -20,8 +20,7 @@
 #define AVANCE_Free     6
 #define POSITION_R      7
 #define BLOQUE          8
-#define AVANCE_TOURNE   9
-#define ORDRE_RECU_MAIS_PAS_ENCORE_TRAITE       20 //pour i2c
+#define STATUS_ROB      10
 
 #include "utils.hpp"
 #ifndef SIMULATION
@@ -68,28 +67,34 @@ class Motorisation {
     Motorisation(unsigned int etat, double posX, double posY, double posTheta);
     ~Motorisation();
 
+    ///\brief stop le robot de force
+    ///on vient forcer l'etat et la position de l'asservissment du robot en i2c à 0
+    ///cela revient à reinitialiser le robot
+    ///\return 0 si tout s'est bien passe, -1 sinon
+    int stop_force();
+    
+    ///\brief demande a l'asservissement si le robot est bloque
+    ///\return 0 si tout s'est bien passe, -1 sinon
+    int status_robot();
+
     ///\brief force l'etat ou/et la position du robot 
     ///on vient forcer l'etat et la position de l'asservissment du robot en i2c avec ce qui est mis dans la structure commmande_ordre
+    ///\param[in] obj_X force la position en X a obj_X
+    ///\param[in] obj_Y force la position en Y a obj_Y
+    ///\param[in] obj_Theta force la position en Theta a obj_Theta
     ///\return 0 si tout s'est bien passe, -1 sinon
-    int set_position();
+    int set_position(double obj_X, double obj_Y, double obj_Theta);
 
     ///\brief met a jour la position du robot dans etat_courant
     ///on vient mettre a jour la position du robot dans commande_etat_courant en i2c avec l'asservissment
     ///\return 0 si tout s'est bien passe, -1 sinon
     int get_position();
     
-    ///\brief envoie l'ordre avance a l'asservissement
-    ///envoie l'ordre en i2c, cette ordre ne sert que a faire avancer le robot tout droit
-    ///\param[in] obj_X coordonnee en x de l'objectif en mm
-    ///\param[in] obj_Y coordonnee en y de l'objectif en mm
-    ///\return retourne 0 si tout s'est bien passe, -1 sinon
-    int avance(double obj_X, double obj_Y);
-
     ///\brief envoie l'ordre tourne a l'asservissement
     ///envoie l'ordre tourne en i2c a l'asservissement d'un angle en radian
     ///\param[in] obj_Theta angle dans lequel on veut que le robot soit, en radian
     ///\return retourne 0 si tout s'est bien passe, -1 sinon
-    int tourne(double obj_Theta);
+    int tourne(double obj_X, double obj_Y, double obj_Theta);
 
     ///\brief envoie l'ordre avance et tourne en meme temps
     ///cette ordre sert a positionner le robot en angle et en position
@@ -97,7 +102,7 @@ class Motorisation {
     ///\param[in] obj_Y coordonnee en y de l'objectif en mm
     ///\param[in] obj_Theta angle dans lequel on veut que le robot soit, en radian
     ///\return retourne 0 si tout s'est bien passe, -1 sinon
-    int avance_tourne(double obj_X, double obj_Y, double obj_Theta);
+    int avance(double obj_X, double obj_Y, double obj_Theta);
 
     ///\brief convertie une structure commande en i2c_packet
     ///cette fonction convertie les membres X, Y, Theta codes en double dans la structure commande en uint8_t[4] dans la structure i2c_packet

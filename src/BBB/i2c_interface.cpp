@@ -55,10 +55,12 @@ I2c_interface::~I2c_interface() {
 int I2c_interface::i2c_read(uint8_t reg_addr, uint8_t * buffer, int length) {
   int r;
 
-  i2c_write(reg_addr);
-
+  r=i2c_write(reg_addr);
+  if (r==-1) {
+    return -1;
+  }
   RESTART_SYSCALL(r, read(_fd, buffer, length));
-  if (r!=length) {
+  if (r==-1) {
     perror("in i2c_interface read : read data");
     return -1;
   }
@@ -79,8 +81,8 @@ int I2c_interface::i2c_write(uint8_t reg_addr, uint8_t *buffer, int length) {
   }
   length++;
   RESTART_SYSCALL(r, write(_fd, wr_buf, length));
-  if (r!=length) {
-    perror("in i2c_interface read : write start bit");
+  if (r==-1) {
+    perror("in i2c_interface write");
     free(wr_buf);
     return -1;
   }

@@ -20,32 +20,65 @@ Motorisation::Motorisation(unsigned int etat, double posX, double posY, double p
 Motorisation::~Motorisation() {
 }
 
-int Motorisation::set_position() {
+int Motorisation::stop_force() {
+  i2c_envoie.Type=STOP_F;
+#ifndef SIMULATION
+  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+#endif
+  return 0;
+}
+
+int Motorisation::status_robot() {
+  i2c_envoie.Type=STATUS_ROB;
+#ifndef SIMULATION
+  my_i2c_interface.i2c_read(i2c_envoie.Type, &i2c_envoie.Type, 1);
+#endif
+  commande_etat_courant.Type=i2c_envoie.Type;
+  printf("status_courant\n");
+  printf("\t%d\n", commande_etat_courant.Type);
+  return 0;
+}
+
+int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
+  commande_etat_courant.Type=POSITION_W;
+  commande_etat_courant.X=obj_X;
+  commande_etat_courant.Y=obj_Y;
+  commande_etat_courant.Theta=obj_Theta;
+  commandeToI2c_packet(commande_etat_courant, i2c_envoie);
+#ifndef SIMULATION
+  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+#endif
   return 0;
 }
   
 int Motorisation::get_position() {
   i2c_envoie.Type=POSITION_R;
+#ifndef SIMULATION
   my_i2c_interface.i2c_read(i2c_envoie.Type, i2c_envoie.X, 12);
+#endif
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
-  /*
   printf("etat_courant\n");
   printf("\tX     = %lf\n", commande_etat_courant.X);
   printf("\tY     = %lf\n", commande_etat_courant.Y);
   printf("\tTheta = %lf\n", commande_etat_courant.Theta);
-  */
   return 0;
 }
 
-int Motorisation::avance(double obj_X, double obj_Y) {
+int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
+  commande_ordre.Type=TOURNE;
+  commande_ordre.X=obj_X;
+  commande_ordre.Y=obj_Y;
+  commande_ordre.Theta=obj_Theta;
+  commandeToI2c_packet(commande_ordre, i2c_envoie);
+#ifndef SIMULATION
+  my_i2c_interface.i2c_write(i2c_envoie.Type, i2c_envoie.X, 12);
+#endif
   return 0;
 }
-int Motorisation::tourne(double obj_Theta) {
-  return 0;
-}
-int Motorisation::avance_tourne(double obj_X, double obj_Y, double obj_Theta)
+
+int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
 {
-  commande_ordre.Type=AVANCE_TOURNE;
+  commande_ordre.Type=AVANCE;
   commande_ordre.X=obj_X;
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;

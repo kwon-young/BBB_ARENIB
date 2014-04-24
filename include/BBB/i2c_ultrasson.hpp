@@ -10,7 +10,7 @@ class I2c_ultrasson : public I2c_interface {
     I2c_ultrasson(int bus, uint8_t slave_addr);
     virtual ~I2c_ultrasson();
 
-    float get_distance();
+    double get_distance();
 };
 
 
