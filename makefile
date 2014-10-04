@@ -1,7 +1,7 @@
 
 CXX=g++
 DEBUG=yes
-EXE=mrboot
+EXE=i2c_test
 
 SRC_DIR=src
 OBJ_DIR=build
@@ -12,15 +12,16 @@ REL_DIR=release
 SRC=$(wildcard $(SRC_DIR)/*.cpp)
 INC=$(wildcard $(INC_DIR)/*.hpp)
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
 ifeq ($(DEBUG), yes)
   EXEC=$(EXE)
 #  EXEC=$(DBG_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I"include" -I"global_include" -g
+  CXXFLAGS= -W -Wall -I"include" -g
   #LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system 
 else
   EXEC=$(EXE)
 #  EXEC=$(REL_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I"include" -I"global_include"
+  CXXFLAGS= -W -Wall -I"include"
   #LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system "libwin32/bass.lib" "libwin32/bassasio.lib" "libwin32/bassflac.lib"
 endif
 

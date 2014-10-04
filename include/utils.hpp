@@ -8,12 +8,14 @@
 #include <fcntl.h>
 #include <string.h>
 #include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+#include <unistd.h>
 
 
 
 #define RESTART_SYSCALL(result,syscall) \
         do { (result)=(syscall);} \
-        while (((result)<0)&&(errno==EINTR));
+        while (((result)<0)&&(errno==EINTR)); \
 
 
 #endif
