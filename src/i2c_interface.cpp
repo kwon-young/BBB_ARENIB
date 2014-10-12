@@ -22,7 +22,7 @@ _slave_addr(slave_addr)
   }
 }
 
-I2c_interface::I2c_interface(I2c_interface &my_i2c_interface) :
+I2c_interface::I2c_interface(const I2c_interface &my_i2c_interface) :
 _bus(my_i2c_interface._bus),
 _slave_addr(my_i2c_interface._slave_addr)
 {

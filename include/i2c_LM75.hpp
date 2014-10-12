@@ -13,8 +13,7 @@ class I2c_LM75 : public I2c_interface {
 
   public:
     I2c_LM75(int bus, char slave_addr);
-    I2c_LM75(I2c_LM75 * myLM75);
-    ~I2c_LM75();
+    virtual ~I2c_LM75();
 
     float temp_hextofloat(char * temp_hex);
     void temp_floattohex(char * temp_hex, float temp_float);

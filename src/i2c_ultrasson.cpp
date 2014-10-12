@@ -5,9 +5,6 @@ I2c_ultrasson::I2c_ultrasson(int bus, char slave_addr) :
 I2c_interface(bus, slave_addr)
 {}
 
-I2c_ultrasson::I2c_ultrasson(I2c_ultrasson * myUltrasson) :
-I2c_interface(myUltrasson->_bus, myUltrasson->_slave_addr)
-{}
 
 I2c_ultrasson::~I2c_ultrasson() {
 

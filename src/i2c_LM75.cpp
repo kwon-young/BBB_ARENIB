@@ -5,9 +5,6 @@ I2c_LM75::I2c_LM75(int bus, char slave_addr) :
 I2c_interface(bus, slave_addr)
 {}
 
-I2c_LM75::I2c_LM75(I2c_LM75 * myLM75) :
-I2c_interface(myLM75->_bus, myLM75->_slave_addr)
-{}
 
 I2c_LM75::~I2c_LM75() {
 
