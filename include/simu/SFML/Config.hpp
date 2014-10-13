@@ -25,6 +25,7 @@
 #ifndef SFML_CONFIG_HPP
 #define SFML_CONFIG_HPP
 
+#define SFML_STATIC
 
 ////////////////////////////////////////////////////////////
 // Define the SFML version
