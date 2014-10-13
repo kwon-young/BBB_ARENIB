@@ -3,9 +3,10 @@ CXX=g++
 DEBUG=yes
 EXE=i2c_test
 
-SRC_DIR=src
+CIBLE=simu
+SRC_DIR=src/$(CIBLE)
 OBJ_DIR=build
-INC_DIR=include
+INC_DIR=include/$(CIBLE)
 DBG_DIR=debug
 REL_DIR=release
 
@@ -17,12 +18,12 @@ ifeq ($(DEBUG), yes)
   EXEC=$(EXE)
 #  EXEC=$(DBG_DIR)/$(EXE)
   CXXFLAGS= -W -Wall -I"include" -g
-  #LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system 
+  LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system 
 else
   EXEC=$(EXE)
 #  EXEC=$(REL_DIR)/$(EXE)
   CXXFLAGS= -W -Wall -I"include"
-  #LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system "libwin32/bass.lib" "libwin32/bassasio.lib" "libwin32/bassflac.lib"
+  LDFLAGS= -L"libwin32" -lsfml-graphics -lsfml-window -lsfml-system 
 endif
 
 all:$(EXEC)
@@ -33,7 +34,7 @@ else
 endif
 
 
-build/%.o: src/%.cpp $(INC)
+build/%.o: $(SRC_DIR)/%.cpp $(INC)
 	@echo Compilation C++ $< to $@
 	g++  -c $< -o $@ $(CXXFLAGS)
 
@@ -47,4 +48,4 @@ run:
 	$(EXEC)
 
 clean:
-	rm -rf $(OBJ_DIR)/*.o */*.exe *~ */*~
+	rm -rf $(OBJ_DIR)/*.o */*.exe *~ */*~ $(EXEC)
