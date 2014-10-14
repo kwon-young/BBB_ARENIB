@@ -9,6 +9,9 @@
 
 #elif CIBLE == simu
 #include <SFML/Graphics.hpp>
+#include "table.hpp"
+#define LARGEUR_TABLE 600.0
+#define HAUTEUR_TABLE 400.0
 #endif
 
 #include "utils.hpp"
@@ -25,9 +28,10 @@ int main (int argc, char *argv[]) {
 
 #if CIBLE == simu
 
-  sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-  sf::CircleShape shape(100.f);
-  shape.setFillColor(sf::Color::Green);
+  sf::RenderWindow window(sf::VideoMode(LARGEUR_TABLE, HAUTEUR_TABLE), "SFML works!");
+  //sf::CircleShape shape(100.f);
+  //shape.setFillColor(sf::Color::Green);
+  Table my_table(LARGEUR_TABLE,HAUTEUR_TABLE, sf::Color::Green);
 
   while (window.isOpen())
   {
@@ -39,7 +43,7 @@ int main (int argc, char *argv[]) {
     }
 
     window.clear();
-    window.draw(shape);
+    window.draw(my_table.surface_table);
     window.display();
   }
 
