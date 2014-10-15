@@ -10,8 +10,11 @@
 #elif CIBLE == simu
 #include <SFML/Graphics.hpp>
 #include "table.hpp"
+#include "robot.hpp"
 #define LARGEUR_TABLE 600.0
 #define HAUTEUR_TABLE 400.0
+#define PAS_U 1.0
+#define PAS_THETA 1.0
 #endif
 
 #include "utils.hpp"
@@ -29,10 +32,13 @@ int main (int argc, char *argv[]) {
 #if CIBLE == simu
 
   sf::RenderWindow window(sf::VideoMode(LARGEUR_TABLE, HAUTEUR_TABLE), "SFML works!");
+  window.setFramerateLimit(60);
   //sf::CircleShape shape(100.f);
   //shape.setFillColor(sf::Color::Green);
   Table my_table(LARGEUR_TABLE,HAUTEUR_TABLE, sf::Color::Green);
-
+  Robot mon_robot(100.0, 50.0, sf::Color::Red, PAS_U, PAS_THETA);
+  mon_robot.set_pos(sf::Vector2f(LARGEUR_TABLE/2.0, HAUTEUR_TABLE/2.0));
+  mon_robot.tourne(100);
   while (window.isOpen())
   {
     sf::Event event;
@@ -41,9 +47,10 @@ int main (int argc, char *argv[]) {
       if (event.type == sf::Event::Closed)
         window.close();
     }
-
+	mon_robot.simu_tourne();
     window.clear();
     window.draw(my_table.surface_table);
+	window.draw(mon_robot.surface_robot);
     window.display();
   }
 

@@ -13,4 +13,22 @@ class I2c_ultrasson : public I2c_interface {
     float get_distance();
 };
 
+class Simu_ultrasson {
+
+  public:
+    Simu_ultrasson(lolo;lololol);
+    virtual ~Simu_ultrasson();
+
+    float get_distance();
+};
+
+/*
+#ifdef REEL
+I2c_ultrasson ultrason(42,42);
+#elif SIMU
+Simu_ultrasson ultrason(fdhjidfshui);
+#endif
+
+ultrason.get_distance(); // marche directement
+*/
 #endif
