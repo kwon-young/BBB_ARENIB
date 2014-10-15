@@ -1,20 +1,17 @@
-#define BBB 0
-#define simu 1
-#define CIBLE simu
 
-#if CIBLE == BBB
-#include "i2c_interface.hpp"
-#include "i2c_LM75.hpp"
-#include "i2c_ultrasson.hpp"
-
-#elif CIBLE == simu
+#ifdef SIMULATION
 #define LARGEUR_TABLE 600.0
 #define HAUTEUR_TABLE 400.0
 #define PAS_U 1.0
 #define PAS_THETA 1.0
+#else
+#include "i2c_interface.hpp"
+#include "i2c_LM75.hpp"
+#include "i2c_ultrasson.hpp"
 #endif
 
 #include "utils.hpp"
+#include "robot.hpp"
 
 int main (int argc, char *argv[]) {
   for (int i=0; i<argc; i++) {
@@ -25,8 +22,9 @@ int main (int argc, char *argv[]) {
       printf ("argc = %d : %s\n", i, argv[i]);
     }
   }
-
-#if CIBLE == simu
+  Robot mon_robot(100.0, 50.0);
+  
+#ifdef SIMULATION
 
   sf::RenderWindow window(sf::VideoMode(LARGEUR_TABLE, HAUTEUR_TABLE), "SFML works!");
   window.setFramerateLimit(60);
@@ -42,11 +40,11 @@ int main (int argc, char *argv[]) {
         window.close();
     }
     window.clear();
-    
+    mon_robot.draw(window);
     window.display();
   }
 
-#elif CIBLE == BBB
+#else
   I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
   char temp_hex[2];
   myLM75->temp_floattohex(temp_hex, 25.5);

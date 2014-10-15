@@ -5,29 +5,34 @@ STATIC=yes
 
 CIBLE=simu
 EXE=$(CIBLE)
-SRC_DIR=src/$(CIBLE)
+SRC_DIR=src
+SRC_DIR_CIBLE=$(SRC_DIR)/$(CIBLE)
 OBJ_DIR=build
-INC_DIR=include/$(CIBLE)
+INC_DIR=include
+INC_DIR_CIBLE=$(INC_DIR)/$(CIBLE)
 DBG_DIR=debug
 REL_DIR=release
 
 SRC=$(wildcard $(SRC_DIR)/*.cpp) 
-INC=$(wildcard $(INC_DIR)/*.hpp)
-OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o) build/main.o
+SRC_CIBLE=$(wildcard $(SRC_DIR_CIBLE)/*.cpp) 
+INC=$(wildcard $(INC_DIR)/*.hpp) 
+INC_CIBLE=$(wildcard $(INC_DIR_CIBLE)/*.hpp)
+OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
 
 ifeq ($(DEBUG), yes)
   EXEC=$(EXE)
 #  EXEC=$(DBG_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I$(INC_DIR) -g
+  CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -DSIMULATION 
 ifeq ($(STATIC), yes)
-  LDFLAGS= -L"libwin32" -D SFML_STATIC=1 -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+  LDFLAGS= -L"libwin32" -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
 else
   LDFLAGS= -L"libwin32" -lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 endif
 else
   EXEC=$(EXE)
 #  EXEC=$(REL_DIR)/$(EXE)
-  CXXFLAGS= -W -Wall -I$(INC_DIR)
+  CXXFLAGS= -W -Wall -I$(INC_DIR) -DSIMULATION 
 ifeq ($(STATIC), yes)
   LDFLAGS= -L"libwin32" -lsfml-graphics-s -lsfml-window-s -lsfml-system-s 
 else
@@ -43,11 +48,11 @@ else
 endif
 
 
-build/main.o : src/main.cpp $(INC)
-	@echo Compilation main.cpp
-	g++ -o $@ -c $< $(CXXFLAGS)
+build/%.o: $(SRC_DIR_CIBLE)/%.cpp $(INC_CIBLE) $(INC)
+	@echo Compilation C++ $< to $@
+	g++  -c $< -o $@ $(CXXFLAGS)
 
-build/%.o: $(SRC_DIR)/%.cpp $(INC)
+build/%.o: $(SRC_DIR)/%.cpp $(INC) $(INC_CIBLE)
 	@echo Compilation C++ $< to $@
 	g++  -c $< -o $@ $(CXXFLAGS)
 
