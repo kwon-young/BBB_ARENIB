@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="haut_niveau" version="3">
+  <DEPS>
+    <ID name="haut_niveau" mc="Package" uid="bbd3e700-01c7-45e4-b5d8-4f6f92aea4e6"/>
+    <COMPID name="Commande" mc="Class" uid="3fcfd6e8-62c9-4772-9290-a9b02c01322f"/>
+    <COMPID name="Env_simu" mc="Class" uid="f9da2425-0e46-4cd9-aaaa-9d8d0e6d590a"/>
+    <COMPID name="Haut_niveau" mc="ClassDiagram" uid="63e596b4-368c-4fb8-be8b-84cbbea6dfa3"/>
+    <COMPID name="I2c_interface" mc="Class" uid="55646f19-4bcb-45cf-9701-5114b79facc8"/>
+    <COMPID name="Motorisation" mc="Class" uid="a45ecee1-46c3-4aef-a790-de0a82cb8258"/>
+    <COMPID name="Robot" mc="Class" uid="e405de05-7ba3-47b9-98f7-8ceaa9f3f94d"/>
+    <COMPID name="Tourelle" mc="Class" uid="9a2b261d-d22b-457d-b5c4-0f1affcc2088"/>
+    <COMPID name="Ultrasson" mc="Class" uid="9dbaba7f-b042-48f6-b422-060974b8dc25"/>
+    <COMPID name="overview diagram" mc="ClassDiagram" uid="b5534f61-8e33-47a4-8243-4bfeb5fb7fc3"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="haut_niveau" mc="Package" uid="bbd3e700-01c7-45e4-b5d8-4f6f92aea4e6"/>
+    <PID name="Haut_niveau" mc="Project" uid="2be938fe-80c5-4350-9046-4c3619ccc819"/>
+    <ATTRIBUTES>
+      <ATT name="IsInstantiable">false</ATT>
+      <ATT name="IsAbstract">false</ATT>
+      <ATT name="IsLeaf">false</ATT>
+      <ATT name="IsRoot">false</ATT>
+      <ATT name="Visibility">Public</ATT>
+      <ATT name="Name"><![CDATA[haut_niveau]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="OwnedElement">
+        <COMPID name="Robot" mc="Class" uid="e405de05-7ba3-47b9-98f7-8ceaa9f3f94d"/>
+        <COMPID name="Motorisation" mc="Class" uid="a45ecee1-46c3-4aef-a790-de0a82cb8258"/>
+        <COMPID name="Ultrasson" mc="Class" uid="9dbaba7f-b042-48f6-b422-060974b8dc25"/>
+        <COMPID name="Tourelle" mc="Class" uid="9a2b261d-d22b-457d-b5c4-0f1affcc2088"/>
+        <COMPID name="Commande" mc="Class" uid="3fcfd6e8-62c9-4772-9290-a9b02c01322f"/>
+        <COMPID name="I2c_interface" mc="Class" uid="55646f19-4bcb-45cf-9701-5114b79facc8"/>
+        <COMPID name="Env_simu" mc="Class" uid="f9da2425-0e46-4cd9-aaaa-9d8d0e6d590a"/>
+      </COMP>
+      <COMP relation="Product">
+        <COMPID name="overview diagram" mc="ClassDiagram" uid="b5534f61-8e33-47a4-8243-4bfeb5fb7fc3"/>
+        <COMPID name="Haut_niveau" mc="ClassDiagram" uid="63e596b4-368c-4fb8-be8b-84cbbea6dfa3"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

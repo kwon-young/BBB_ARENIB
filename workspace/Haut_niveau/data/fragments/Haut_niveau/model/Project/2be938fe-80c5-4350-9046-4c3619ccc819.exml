@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="Haut_niveau" version="3">
+  <DEPS>
+    <ID name="Haut_niveau" mc="Project" uid="2be938fe-80c5-4350-9046-4c3619ccc819"/>
+    <COMPID name="Haut_niveau" mc="DiagramSet" uid="ce1c6b1c-f603-4512-8dc6-3f1c61e8b08c"/>
+    <COMPID name="haut_niveau" mc="Package" uid="bbd3e700-01c7-45e4-b5d8-4f6f92aea4e6"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="Haut_niveau" mc="Project" uid="2be938fe-80c5-4350-9046-4c3619ccc819"/>
+    <ATTRIBUTES>
+      <ATT name="ProjectContext"></ATT>
+      <ATT name="ProjectDescr"></ATT>
+      <ATT name="Name"><![CDATA[Haut_niveau]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES>
+      <COMP relation="DiagramRoot">
+        <COMPID name="Haut_niveau" mc="DiagramSet" uid="ce1c6b1c-f603-4512-8dc6-3f1c61e8b08c"/>
+      </COMP>
+      <COMP relation="Model">
+        <COMPID name="haut_niveau" mc="Package" uid="bbd3e700-01c7-45e4-b5d8-4f6f92aea4e6"/>
+      </COMP>
+    </DEPENDENCIES>
+  </OBJECT>
+</EXT>

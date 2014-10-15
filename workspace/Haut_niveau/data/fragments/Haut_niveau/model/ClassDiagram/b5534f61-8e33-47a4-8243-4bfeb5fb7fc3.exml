@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!--GENERATED FILE, PLEASE DO NOT EDIT!!!--><EXT object="overview diagram" version="3">
+  <DEPS>
+    <ID name="overview diagram" mc="ClassDiagram" uid="b5534f61-8e33-47a4-8243-4bfeb5fb7fc3"/>
+  </DEPS>
+  <OBJECT>
+    <ID name="overview diagram" mc="ClassDiagram" uid="b5534f61-8e33-47a4-8243-4bfeb5fb7fc3"/>
+    <PID name="haut_niveau" mc="Package" uid="bbd3e700-01c7-45e4-b5d8-4f6f92aea4e6"/>
+    <ATTRIBUTES>
+      <ATT name="UiDataVersion">163</ATT>
+      <ATT name="UiData"><![CDATA[eJztU11P2zAU/SuW3+sCSQcPoQgaVCEyitptEk/oJr7pDI5d2e5H/v2cJt1op0ZBQuxlT7av7zn369zoalNIskJjhVaX9JSdUHI1jCbpC2aOCO5NlLhygZdUmzkrNEcpNOMC5gYKhlw4bZh14MQrQ4kFKmfrd7ZzGhez7Tuu35QU8KLN8++gJ3QYPRq9QONKoqDwsSSUeulicOD/foBcYpOEWkpJ+8OovwP8BZ25UiLdK+GsrQRb+VuWaYOsxnbIbwQ2A458F+x246aYd4zy4CkaJMGNi9M7n+P2Wl045rCU7qDIfl1OW+EGJTjkPo+Dnn2tTGRVWXzmEqxtJkHSwSAI8y+nvQsMgl54DmHv4iz0tzTHdJCn53kWtHfbs7l7pdcqgRTlQeCZM0LN6VD7Vq4ErknTjai/9WotRku8UyNdLLQVzo/hCHUHqtFPIbnBiiERtmphcxxFJEK92u7uN/PYwNqnk0CJZl96Qev27PaF13jLZMXgF2aP8HP25X2ofyI2wY+oIB6z5Prpdvp8cz26H08n3x/ijxFGh7V7O6o/onkjgfC/BD5TAt8mjx89+6NfvwA6ioWT]]></ATT>
+      <ATT name="PdeProperties"></ATT>
+      <ATT name="Name"><![CDATA[overview diagram]]></ATT>
+      <ATT name="status">1970354901745664</ATT>
+    </ATTRIBUTES>
+    <DEPENDENCIES></DEPENDENCIES>
+  </OBJECT>
+</EXT>
