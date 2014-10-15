@@ -7,7 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <cmath>
-
+#include <SFML/Graphics.hpp>
 
 #endif
 
