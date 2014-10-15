@@ -8,7 +8,7 @@
 class Table{
 
   public:
-    Table(float largeur, float hauteur, sf::Color & my_couleur_table);
+    Table(float largeur, float hauteur, const sf::Color & my_couleur_table);
     ~Table();
   
     sf::RectangleShape surface_table;
