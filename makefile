@@ -3,7 +3,7 @@ CXX=g++
 DEBUG=yes
 STATIC=yes
 
-CIBLE=BBB
+CIBLE=simu
 EXE=$(CIBLE)
 SRC_DIR=src
 SRC_DIR_CIBLE=$(SRC_DIR)/$(CIBLE)
@@ -22,12 +22,11 @@ OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
 
 ifeq ($(DEBUG), yes)
   EXEC=$(EXE)
-#  EXEC=$(DBG_DIR)/$(EXE)
   CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -std=c++0x 
-  #CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -g -std=c++0x -D SIMULATION
 ifeq ($(STATIC), yes)
   ifeq ($(CIBLE), simu)
     LDFLAGS= -L"libwin32" -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+	 CXXFLAGS+= -DSIMULATION
   else
     LDFLAGS= 
   endif
