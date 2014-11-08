@@ -85,7 +85,7 @@ class i2c_bus : public std::mutex {
     char name[42]; //!<nom du bus i2c deduit de _bus
     
   protected:
-    int _bus;           //!<bus i2c
+    //int _bus;           //!<bus i2c
     int _fd;            //!<descripteur de fichier permettant d'ecrire et lire dans le bus i2c
 };
 

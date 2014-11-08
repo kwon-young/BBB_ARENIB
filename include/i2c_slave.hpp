@@ -35,14 +35,15 @@ class i2c_slave
     ///\brief permet d'ecrire à l'esclave sur le bus i2c 
     ///\param[in] buffer pointeur sur un paquet d'octet a ecrire
     ///\param[in] length taille de buffer en octet
-    ///\return 0 si tout s'est bien passe, -1 sinon
+    ///\return le nombre d'octets écris si tout s'est bien passe, -1 sinon
     int write(const uint8_t *buffer, int length);
-
-    ///\brief permet de lire de l'esclave sur le bus i2c
+    
+    ///\brief permet de lire depuis l'esclave sur le bus i2c en lui écrivant une commande
+    ///\param[in] commande ou registre 
     ///\param[out] buffer pointeur sur un paquet d'octet qui recupere les donnees lues
     ///\param[in] length taille de buffer en octet
-    ///\return 0 si tout s'est bien passe, -1 sinon
-    int read(uint8_t *buffer, int length);
+    ///\return le nombre d'octets lus si tout s'est bien passe, -1 sinon
+    int fast_read(uint8_t cmd, uint8_t *buffer, int length);
     
     ///\brief permet d'ecrire et de lire succesivement sur le bus i2c
     ///\param[in] out pointeur sur un paquet d'octet a ecrire
