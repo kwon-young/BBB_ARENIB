@@ -4,15 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
 #include <string.h>
-#include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
 #include <unistd.h>
 #include <cstdint>
 #include <climits>
+#include <mutex> //requiert C++ 2011
+
+
+#ifndef SIMULATION
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/ioctl.h>
+#include <linux/i2c-dev.h>
+
+#endif
 
 #define PI 3.14159265
 
