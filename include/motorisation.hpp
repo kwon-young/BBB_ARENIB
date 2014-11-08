@@ -23,6 +23,7 @@
 #define STATUS_ROB      10
 
 #include "utils.hpp"
+
 #ifndef SIMULATION
 #include "i2c_interface.hpp"
 #endif

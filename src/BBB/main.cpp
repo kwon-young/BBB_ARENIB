@@ -1,13 +1,19 @@
 
-#ifdef SIMULATION
+///\file main.cpp
+///\brief Programme pour robot réele programmation sur cible BeagleBone Black
+///\author Kwon-Young Choi
+///\version 1
+///\date 20/10/2014
+
+
 #define LARGEUR_TABLE 600.0
 #define HAUTEUR_TABLE 400.0
 #define PAS_U 1.0
 #define PAS_THETA 1.0
-#else
+
 #include "i2c_interface.hpp"
 #include "i2c_LM75.hpp"
-#endif
+
 
 #include "utils.hpp"
 #include "robot.hpp"
@@ -54,27 +60,6 @@ int main (int argc, char *argv[]) {
      mytourelle.get_datas();
    */
 
-#ifdef SIMULATION
-
-  sf::RenderWindow window(sf::VideoMode(LARGEUR_TABLE, HAUTEUR_TABLE), "SFML works!");
-  window.setFramerateLimit(60);
-  //sf::CircleShape shape(100.f);
-  //shape.setFillColor(sf::Color::Green);
-
-  while (window.isOpen())
-  {
-    sf::Event event;
-    while (window.pollEvent(event))
-    {
-      if (event.type == sf::Event::Closed)
-        window.close();
-    }
-    window.clear();
-    mon_robot.draw(window);
-    window.display();
-  }
-
-#else
   /*
      I2c_LM75 * myLM75 = new I2c_LM75(1, 0x48);
      uint8_t temp_hex[2];
@@ -93,7 +78,6 @@ int main (int argc, char *argv[]) {
      usleep(5000);
      }
    */
-#endif
   return 0;
 
 }
