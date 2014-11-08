@@ -1,6 +1,6 @@
 
-#ifndef I2C_INTERFACE
-#define I2C_INTERFACE
+#ifndef I2C_BUS
+#define I2C_BUS
 
 ///\file i2c_interface.hpp
 ///\brief Classe permettant de communiquer en i2c
@@ -40,7 +40,7 @@ class fake_i2c_bus : public std::mutex {
 
 #else
 
-///\class i2c_bus i2c_bus.hpp
+///\class i2c_bus i2c_bus.hpp elle créer un fd générique du bus
 class i2c_bus : public std::mutex {
   public:
     ///\brief Constructeur 
@@ -52,9 +52,11 @@ class i2c_bus : public std::mutex {
     ///\brief Destructeur
     virtual ~i2c_bus();
     
-    ///\brief permet d'obtenir un fd pointant du bus
+    ///\brief permet d'obtenir un fd pointant sur le bus
     ///\return derivated_fd si tout s'est bien passe, -1 sinon
     int request();
+    
+    /* non pas de raison d'exister
     
     ///\brief permet d'ecrire sur le bus i2c
     ///\param[in] file descriptor derivé du BUS
@@ -77,11 +79,13 @@ class i2c_bus : public std::mutex {
     ///\param[in] length taille de buffer en octet
     ///\return 0 si tout s'est bien passe, -1 sinon
     int write_read(int derivated_fd, const uint8_t *out, int lout 
-                                   , const uint8_t *in, int lin);
+                                         , uint8_t *in, int lin);
+    */
+    
+    char name[42]; //!<nom du bus i2c deduit de _bus
     
   protected:
     int _bus;           //!<bus i2c
-    char _name_bus[42]; //!<nom du bus i2c deduit de _bus
     int _fd;            //!<descripteur de fichier permettant d'ecrire et lire dans le bus i2c
 };
 
