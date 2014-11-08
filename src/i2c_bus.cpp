@@ -7,6 +7,21 @@
 
 #ifdef SIMULATION
 
+fake_i2c_bus::fake_i2c_bus(unsigned int udelay):
+_udelay(udelay)
+{
+  snprintf(name, sizeof(name), "fake i2c system");
+}
+
+fake_i2c_bus::~fake_i2c_bus()
+{
+}
+
+int fake_i2c_bus::do_operation(unsigned int bytes)
+{
+  //TODO put proper sleep here in usec
+  return bytes*_udelay;
+}
 
 #else
 

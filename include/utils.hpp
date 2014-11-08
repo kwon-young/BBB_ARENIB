@@ -4,22 +4,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <fcntl.h>
 #include <string.h>
-#include <unistd.h>
 #include <cstdint>
 #include <climits>
-#include <mutex> //requiert C++ 2011
 
+#ifdef SIMULATION
 
-#ifndef SIMULATION
+#include <QMutex>
+#include <QThread>
+typedef QMutex Mutex;
 
+#else
+
+#include <unistd.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
+#include <mutex> //requiert C++ 2011
+typedef std::mutex Mutex;
 
 #endif
+
+
 
 #define PI 3.14159265
 

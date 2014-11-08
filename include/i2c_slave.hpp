@@ -9,26 +9,31 @@
 ///\version 1
 ///\date 20/10/2014
 ///Definition de la classe i2c_slave utilisant un i2c_bus pour communiquer
-
-#ifndef SIMULATION
+/// Dans le cas d'une simulation 
 
 #include "i2c_bus.hpp"
 
 class i2c_slave 
 {
   public:
+	#ifdef SIMULATION
+	i2c_slave(fake_i2c_bus& bus, uint8_t addr);
+	#else
     i2c_slave(i2c_bus& bus, uint8_t addr);
+	#endif
     virtual ~i2c_slave();
     
     
+	#ifndef SIMULATION
     ///\brief permet de choisir le bus i2c
     ///\param[in] bus
     ///\return 0 si tout s'est bien passe, -1 sinon
     int set_bus(i2c_bus& bus);
-    
+    #endif 
+	
     ///\brief permet d'obtenir le mutex associé au bus ( si besoin )
     ///\return mutex associé au bus 
-    inline std::mutex& get_mutex() {
+    inline Mutex& get_mutex() {
       return *_bus;
     }
     
@@ -55,11 +60,13 @@ class i2c_slave
                         , uint8_t *in, int lin);
     
   protected:
-    int _derivated_fd;
+	#ifdef SIMULATION
+    fake_i2c_bus* _bus;
+	#else
+	int _derivated_fd;
     i2c_bus* _bus; //Must always be alive !
     uint8_t _addr; 
+	#endif
 };
-
-#endif
 
 #endif //HEADER

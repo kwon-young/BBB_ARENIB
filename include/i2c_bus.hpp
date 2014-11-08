@@ -16,7 +16,7 @@
 #ifdef SIMULATION
 
 ///\class fake_i2c_bus i2c_bus.hpp
-class fake_i2c_bus : public std::mutex {
+class fake_i2c_bus : public Mutex {
   public:
     ///\brief Constructeur 
     ///Le constructeur se charge d'initialiser le bus i2c comme il faut.
@@ -41,7 +41,7 @@ class fake_i2c_bus : public std::mutex {
 #else
 
 ///\class i2c_bus i2c_bus.hpp elle créer un fd générique du bus
-class i2c_bus : public std::mutex {
+class i2c_bus : public Mutex {
   public:
     ///\brief Constructeur 
     ///Le constructeur se charge d'initialiser le bus i2c comme il faut.
@@ -55,33 +55,7 @@ class i2c_bus : public std::mutex {
     ///\brief permet d'obtenir un fd pointant sur le bus
     ///\return derivated_fd si tout s'est bien passe, -1 sinon
     int request();
-    
-    /* non pas de raison d'exister
-    
-    ///\brief permet d'ecrire sur le bus i2c
-    ///\param[in] file descriptor derivé du BUS
-    ///\param[in] buffer pointeur sur un paquet d'octet a ecrire
-    ///\param[in] length taille de buffer en octet
-    ///\return 0 si tout s'est bien passe, -1 sinon
-    int write(int derivated_fd, const uint8_t *buffer, int length);
-
-    ///\brief permet de lire sur le bus i2c
-    ///\param[out] buffer pointeur sur un paquet d'octet qui recupere les donnees lues
-    ///\param[in] length taille de buffer en octet
-    ///\return 0 si tout s'est bien passe, -1 sinon
-    int read(int derivated_fd, uint8_t *buffer, int length);
-    
-    ///\brief permet d'ecrire et de lire succesivement sur le bus i2c
-    ///\param[in] file descriptor derivé du BUS
-    ///\param[in] out pointeur sur un paquet d'octet a ecrire
-    ///\param[in] lout taille de buffer en octet
-    ///\param[out] buffer pointeur sur un paquet d'octet qui recupere les donnees lues
-    ///\param[in] length taille de buffer en octet
-    ///\return 0 si tout s'est bien passe, -1 sinon
-    int write_read(int derivated_fd, const uint8_t *out, int lout 
-                                         , uint8_t *in, int lin);
-    */
-    
+	
     char name[42]; //!<nom du bus i2c deduit de _bus
     
   protected:
