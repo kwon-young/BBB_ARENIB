@@ -7,7 +7,7 @@
 #include "i2c_slave.hpp"
 
 #ifdef SIMULATION
-i2c_slave::i2c_slave(fake_i2c_bus& bus, uint8_t addr) :
+i2c_slave::i2c_slave(i2c_bus& bus, uint8_t addr) :
 _bus(&bus)
 {
 	(void) addr;
@@ -19,7 +19,27 @@ _derivated_fd(-1),
 _bus(&bus),
 _addr(addr)
 {
-  set_bus(bus);
+  int r;
+  if (_derivated_fd != -1)
+  {
+    RESTART_SYSCALL(r, close(_fd));
+    if (r==-1) {
+      printf("close %s", _bus->name);
+      perror("");
+    }
+  }
+  
+  _bus=&bus;
+  _derivated_fd = bus.request();
+  
+  if (_derivated_fd == -1) exit(-1);
+  
+  RESTART_SYSCALL(r, ioctl(_derivated_fd, I2C_SLAVE, _addr));
+  if (r==-1) {
+    printf("ioctl %s", _bus->name);
+    perror("");
+    exit(-1);
+  }
 }
 #endif
     
@@ -37,35 +57,6 @@ i2c_slave::~i2c_slave() {
   }
   #endif
 }
-
-#ifndef SIMULATION  
-int i2c_slave::set_bus(i2c_bus& bus)
-{
-  int r;
-  if (_derivated_fd != -1)
-  {
-    RESTART_SYSCALL(r, close(_fd));
-    if (r==-1) {
-      printf("close %s", _bus->name);
-      perror("");
-      return r;
-    }
-  }
-  
-  _bus=&bus;
-  _derivated_fd = bus.request();
-  
-  if (_derivated_fd == -1) return -1;
-  
-  RESTART_SYSCALL(r, ioctl(_derivated_fd, I2C_SLAVE, _addr));
-  if (r==-1) {
-    printf("ioctl %s", _bus->name);
-    perror("");
-  }
-  return r;
-}
-#endif
-
 
 int i2c_slave::write(const uint8_t *buffer, int length)
 {

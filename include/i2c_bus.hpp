@@ -8,24 +8,24 @@
 ///\version 1
 ///\date 20/10/2014
 ///Definition de la classe i2c_bus qui permet de communiquer en i2c avec la BBB
-/// et également de la classe fake_i2c_bus qui permet de simuler le delay 
+/// et également de la classe i2c_bus qui permet de simuler le delay 
 /// d'envois des ordres
 
 #include "utils.hpp"
 
 #ifdef SIMULATION
 
-///\class fake_i2c_bus i2c_bus.hpp
-class fake_i2c_bus : public Mutex {
+///\class i2c_bus i2c_bus.hpp
+class i2c_bus : public sf::Mutex {
   public:
     ///\brief Constructeur 
     ///Le constructeur se charge d'initialiser le bus i2c comme il faut.
     ///Il lie un descripteur de fichier a un bus i2c et a une adresse esclave.
     ///\param[in] bus numero du bus i2c, sur une BBB debian c'est 1
-    fake_i2c_bus(unsigned int udelay);
+    i2c_bus(unsigned int udelay);
 
     ///\brief Destructeur
-    virtual ~fake_i2c_bus();
+    virtual ~i2c_bus();
     
     ///\brief permet d'ecrire sur le bus i2c
     ///\param[in] nombre d'octets écrits ou lus sur le bus
@@ -41,7 +41,7 @@ class fake_i2c_bus : public Mutex {
 #else
 
 ///\class i2c_bus i2c_bus.hpp elle créer un fd générique du bus
-class i2c_bus : public Mutex {
+class i2c_bus : public sf::Mutex {
   public:
     ///\brief Constructeur 
     ///Le constructeur se charge d'initialiser le bus i2c comme il faut.

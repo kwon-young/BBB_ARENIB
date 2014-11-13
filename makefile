@@ -21,7 +21,7 @@ OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
 CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -std=c++11
 
 ifeq ($(CIBLE), simu)
-  CXXFLAGS+= -DSIMULATION
+  CXXFLAGS+= -D SIMULATION=1
 endif
 ifeq ($(DEBUG), yes)
   CXXFLAGS+= -g
