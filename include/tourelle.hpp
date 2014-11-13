@@ -2,6 +2,7 @@
 #ifndef I2C_TOURELLE_HPP
 #define I2C_TOURELLE_HPP
 
+#include "utils.hpp"
 #ifndef SIMULATION
 #include "i2c_interface.hpp"
 #endif
@@ -13,6 +14,8 @@ typedef struct _i2c_tourelle{
 
 #ifndef SIMULATION
 class Tourelle : public I2c_interface {
+#else
+class Tourelle {
 #endif
 
   public:

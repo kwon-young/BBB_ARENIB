@@ -2,12 +2,15 @@
 #ifndef ULTRASSON_HPP
 #define ULTRASSON_HPP
 
+#include "utils.hpp"
 #ifndef SIMULATION
 #include "i2c_interface.hpp"
 #endif
 
 #ifndef SIMULATION
 class Ultrasson : public I2c_interface {
+#else
+class Ultrasson {
 #endif
 
   public:
@@ -19,14 +22,4 @@ class Ultrasson : public I2c_interface {
     double * distances;
 };
 
-
-/*
-#ifdef REEL
-I2c_ultrasson ultrason(42,42);
-#elif SIMU
-Simu_ultrasson ultrason(fdhjidfshui);
-#endif
-
-ultrason.get_distance(); // marche directement
- */
 #endif

@@ -3,11 +3,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <string.h>
-#include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <cmath>
+#include <cstdint>
 #include <SFML/Graphics.hpp>
+
+#define PI 3.14159265
 
 #endif
 

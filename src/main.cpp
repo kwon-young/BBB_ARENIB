@@ -13,6 +13,8 @@
 #include "robot.hpp"
 #include "tourelle.hpp"
 #include "ultrasson.hpp"
+#include "simu_motorisation.hpp"
+
 
 int main (int argc, char *argv[]) {
   for (int i=0; i<argc; i++) {
@@ -24,35 +26,28 @@ int main (int argc, char *argv[]) {
     }
   }
   Robot mon_robot(100.0, 50.0, 1, 0x30);
+
+  /*
   //mon_robot.asserv.set_position(0, 0, 0);
   mon_robot.asserv.avance(0, 200, -PI/2.0);
-  sleep(1);
   mon_robot.asserv.avance(200, 200, -2.0*PI/2.0);
-  sleep(1);
   mon_robot.asserv.avance(200, 0, PI/2.0);
-  sleep(1);
   mon_robot.asserv.avance(0, 0, 0.0);
-  sleep(1);
 
   while(mon_robot.asserv.status_robot()!=STOP) {
-  sleep(1);
   }
   mon_robot.asserv.get_position();
   mon_robot.asserv.avance(0, 200, -PI/2.0);
-  sleep(1);
   while(mon_robot.asserv.status_robot()!=STOP) {
-  sleep(1);
   }
   mon_robot.asserv.get_position();
   while(mon_robot.asserv.status_robot()!=STOP) {
-  sleep(1);
   }
   mon_robot.asserv.get_position();
-  /*
-     Tourelle mytourelle(1, 0x45, 6);
-     printf("%c\n", mytourelle.get_error());
-     mytourelle.get_datas();
-   */
+  Tourelle mytourelle(1, 0x45, 6);
+  printf("%c\n", mytourelle.get_error());
+  mytourelle.get_datas();
+  */
 
 #ifdef SIMULATION
 
@@ -61,6 +56,14 @@ int main (int argc, char *argv[]) {
   //sf::CircleShape shape(100.f);
   //shape.setFillColor(sf::Color::Green);
 
+  Simu_motorisation mySimu(STOP, 50, 50, 0);
+  //Simu_motorisation mySimu(STOP, 300, 100, 0);
+  mySimu.recv_avance(100, 100, 0);
+  mySimu.show_position();
+  mySimu.show_ordres(4);
+
+  sf::Vector2f origin=mon_robot.surface_robot.getSize();
+  mon_robot.surface_robot.setOrigin(origin.x/2.0, origin.y/2.0);
   while (window.isOpen())
   {
     sf::Event event;
@@ -69,10 +72,16 @@ int main (int argc, char *argv[]) {
       if (event.type == sf::Event::Closed)
         window.close();
     }
+    mySimu.update();
+    mon_robot.surface_robot.setPosition(mySimu.simu_position.X, mySimu.simu_position.Y);
+    mon_robot.surface_robot.setRotation(-mySimu.simu_position.Theta*180.0/PI);
+
     window.clear();
     mon_robot.draw(window);
     window.display();
+    sf::sleep(sf::milliseconds(100));
   }
+  mySimu.show_ordres(4);
 
 #else
   /*
@@ -88,11 +97,8 @@ int main (int argc, char *argv[]) {
      Ultrasson * myUltrasson= new Ultrasson(1, 0x10, 2);
      while(1) {
      myUltrasson->get_distances();
-     usleep(5000);
-     usleep(5000);
-     usleep(5000);
      }
-   */
+     */
 #endif
   return 0;
 
