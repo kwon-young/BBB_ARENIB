@@ -17,26 +17,17 @@
 #define TOURNE          3
 #define STOP            4
 #define POSITION_W      5
-#define AVANCE_Free     6
+#define AVANCE_FREE     6
 #define POSITION_R      7
 #define BLOQUE          8
 #define STATUS_ROB      10
 
 #include "utils.hpp"
-#ifndef SIMULATION
-#include "i2c_interface.hpp"
-#endif
+#include "i2c_bus.hpp"
+#include "i2c_slave.hpp"
 
-///\struct i2c_packet
-///\brief permet de traduire plus facilement la structure commande pour l'envoyer en i2c
-///Le but de cette structure est de traduire la structure Commande en format de donnees facile a envoyer pour l'i2c, qui n'envoie que des paquets d'octet.
-///la precision du codage peut aller jusqu'au micron pour X et Y
-typedef struct _i2c_packet {
-  uint8_t Type;     //!<peut representer un etat du robot definie plus haut
-  uint8_t X[4];     //!<position en X, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
-  uint8_t Y[4];     //!<position en Y, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
-  uint8_t Theta[4]; //!<position en Theta, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10 000eme de radian
-}I2c_packet;
+
+
 
 ///\struct commande
 ///\brief permet de representer soit l'etat du robot ou bien un ordre pour le robot
@@ -53,13 +44,26 @@ typedef struct _commande
 ///\brief Classe permettant de communiquer avec l'asservisssment
 ///Cette classe fait le pont entre la vrai carte d'asservissement et le haut niveau.
 ///Cette classe sait communiquer en i2c avec l'asservissment
-#ifndef SIMULATION
-class Motorisation : public I2c_interface {
+#ifdef SIMULATION
+class Motorisation  {
 #else
-class Motorisation {
+class Motorisation : public i2c_slave {
 #endif
 
   public:
+  
+	///\struct i2c_packet
+	///\brief permet de traduire plus facilement la structure commande pour l'envoyer en i2c
+	///Le but de cette structure est de traduire la structure Commande en format de donnees facile a envoyer pour l'i2c, qui n'envoie que des paquets d'octet.
+	///la precision du codage peut aller jusqu'au micron pour X et Y
+	typedef struct _i2c_packet {
+	  uint8_t type;     //!<peut representer un etat du robot definie plus haut
+	  uint8_t x[4];     //!<position en X, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
+	  uint8_t y[4];     //!<position en Y, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10eme de milimetre
+	  uint8_t theta[4]; //!<position en Theta, entier sur 4 octets dont le bit de poid fort represente le signe, actuellement en 10 000eme de radian
+	}i2c_packet;
+  
+  
     ///\brief Constructeur par defaut
     ///\param[in] etat etat du robot
     ///\param[in] posX position initial en X
@@ -74,8 +78,8 @@ class Motorisation {
     virtual ~Motorisation();
 
     ///\brief stop le robot de force
-    ///on vient forcer l'etat et la position de l'asservissment du robot en i2c à 0
-    ///cela revient à reinitialiser le robot
+    ///on vient forcer l'etat et la position de l'asservissment du robot en i2c a 0
+    ///cela revient reinitialiser le robot
     ///\return 0 si tout s'est bien passe, -1 sinon
     int stop_force();
     
@@ -127,6 +131,8 @@ class Motorisation {
     I2c_packet i2c_envoie; //!<structure i2c_packet qui sert a envoyer des octets sur le bus i2c
     Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
     Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
+		
+	protected
 };
 
 #endif

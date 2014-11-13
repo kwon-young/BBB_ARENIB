@@ -15,9 +15,7 @@ class Robot {
 #endif
     void update();
 
-#ifdef SIMULATION
-    sf::RectangleShape surface_robot;
-#else
+
     double largeur;
     double hauteur;
 #endif
