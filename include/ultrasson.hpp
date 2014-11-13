@@ -3,18 +3,13 @@
 #define ULTRASSON_HPP
 
 #include "utils.hpp"
-#ifndef SIMULATION
-#include "i2c_interface.hpp"
-#endif
+#include "i2c_slave.hpp"
 
-#ifndef SIMULATION
-class Ultrasson : public I2c_interface {
-#else
-class Ultrasson {
-#endif
+
+class Ultrasson : public i2c_slave{
 
   public:
-    Ultrasson(int bus, uint8_t slave_addr, int my_nbr_ultrassons);
+    Ultrasson(i2c_bus& bus, uint8_t slave_addr, int my_nbr_ultrassons);
     virtual ~Ultrasson();
 
     int get_distances();
