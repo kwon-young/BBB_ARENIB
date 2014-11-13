@@ -18,7 +18,7 @@ INC=$(wildcard $(INC_DIR)/*.hpp)
 INC_CIBLE=$(wildcard $(INC_DIR_CIBLE)/*.hpp)
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
-CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -std=c++11
+CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -std=c++11 -D SFML_STATIC=1
 
 ifeq ($(CIBLE), simu)
   CXXFLAGS+= -D SIMULATION=1
