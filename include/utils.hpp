@@ -7,14 +7,10 @@
 #include <string.h>
 #include <cstdint>
 #include <climits>
+#include <SFML/System.hpp>
+#include <SFML/Network.hpp>
 
-#ifdef SIMULATION
-
-#include <QMutex>
-#include <QThread>
-typedef QMutex Mutex;
-
-#else
+#ifndef SIMULATION
 
 #include <unistd.h>
 #include <fcntl.h>
@@ -22,8 +18,6 @@ typedef QMutex Mutex;
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
-#include <mutex> //requiert C++ 2011
-typedef std::mutex Mutex;
 
 #endif
 

@@ -18,14 +18,7 @@ INC=$(wildcard $(INC_DIR)/*.hpp)
 INC_CIBLE=$(wildcard $(INC_DIR_CIBLE)/*.hpp)
 OBJ=$(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 OBJ_CIBLE=$(SRC_CIBLE:$(SRC_DIR_CIBLE)/%.cpp=$(OBJ_DIR)/%.o)
-CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) 
-
-ifeq ($(CXX), clang++)
-  CXXFLAGS+= -stdlib=libc++ -std=c++11
-endif
-ifeq ($(CXX), g++)
-  CXXFLAGS+= -std=c++11
-endif
+CXXFLAGS= -W -Wall -I$(INC_DIR) -I$(INC_DIR_CIBLE) -std=c++11
 
 ifeq ($(CIBLE), simu)
   CXXFLAGS+= -DSIMULATION
