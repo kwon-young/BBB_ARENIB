@@ -25,10 +25,10 @@ ifeq ($(CIBLE), simu)
 endif
 ifeq ($(DEBUG), yes)
   CXXFLAGS+= -g
-  LDFLAGS= -lsfml-network-s-d -lsfml-graphics-s-d -lsfml-window-s-d -lsfml-system-s-d
+  LDFLAGS= -lsfml-network-s-d -lsfml-system-s-d
 else 
   CXXFLAGS+= -O2
-  LDFLAGS= -lsfml-network-s -lsfml-graphics-s -lsfml-window-s -lsfml-system-s
+  LDFLAGS= -lsfml-network-s -lsfml-system-s
 endif
 
 all:$(EXEC)

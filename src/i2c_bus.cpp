@@ -4,7 +4,6 @@
 ///\author Kwon-Young Choi & Julien De Loor
 
 #include "i2c_bus.hpp"
-
 #ifdef SIMULATION
 
 i2c_bus::i2c_bus(unsigned int udelay):
@@ -20,6 +19,7 @@ i2c_bus::~i2c_bus()
 int i2c_bus::do_operation(unsigned int bytes)
 {
   //TODO put proper sleep here in usec
+  sf::sleep(sf::microseconds(bytes*_udelay));
   return bytes*_udelay;
 }
 
