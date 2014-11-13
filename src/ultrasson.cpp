@@ -1,10 +1,8 @@
 
 #include "ultrasson.hpp"
 
-Ultrasson::Ultrasson(int bus, uint8_t slave_addr, int my_nbr_ultrassons) :
-#ifndef SIMULATION
-I2c_interface(bus, slave_addr),
-#endif
+Ultrasson::Ultrasson(i2c_bus& bus, uint8_t slave_addr, int my_nbr_ultrassons) :
+i2c_slave(bus, slave_addr),
 nbr_ultrassons(my_nbr_ultrassons)
 {
   distances=(double*)malloc(sizeof(double)*nbr_ultrassons);
@@ -20,9 +18,7 @@ Ultrasson::~Ultrasson() {
 int Ultrasson::get_distances() {
   uint8_t distance_uint8[10]={0};
   int r=0;
-#ifndef SIMULATION
-  r=i2c_read('r', distance_uint8, sizeof(distance_uint8));
-#endif
+  r=fast_read('r', distance_uint8, sizeof(distance_uint8));
   if (r==-1) {
     return r;
   }
