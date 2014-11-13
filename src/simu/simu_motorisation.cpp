@@ -12,7 +12,7 @@ Simu_motorisation::Simu_motorisation( uint8_t etat,
   simu_position.X     = posX;
   simu_position.Y     = posY;
   simu_position.Theta = posTheta;
-  simu_ordres=(Commande*)malloc(sizeof(Commande)*NB_ORDRES);
+  simu_ordres=(Motorisation::Commande*)malloc(sizeof(Motorisation::Commande)*NB_ORDRES);
   for (int i=0; i<NB_ORDRES; i++) {
     simu_ordres[i].Type  = STOP;
     simu_ordres[i].X     = 0;
@@ -52,7 +52,7 @@ int Simu_motorisation::recv_position(double obj_X, double obj_Y, double obj_Thet
   return 0;
 }
 
-int Simu_motorisation::send_position_state(Commande &position) {
+int Simu_motorisation::send_position_state(Motorisation::Commande &position) {
   position.Type  = simu_position.Type;
   position.X     = simu_position.X;
   position.Y     = simu_position.Y;
@@ -73,8 +73,8 @@ int Simu_motorisation::recv_avance(double obj_X, double obj_Y, double obj_Theta)
 }
 
 int Simu_motorisation::update() {
-  Commande obj = simu_ordres[p_ordre_courant];
-  Commande diff;
+  Motorisation::Commande obj = simu_ordres[p_ordre_courant];
+  Motorisation::Commande diff;
   diff.X     = obj.X - simu_position.X;
   diff.Y     = obj.Y - simu_position.Y;
   double Theta = atan2(diff.Y, diff.X);

@@ -36,7 +36,7 @@ class Simu_motorisation {
 
     ///\brief renvoie la position et l'etat du robot 
     ///\return 0 si tout s'est bien passe, -1 sinon
-    int send_position_state(Commande &position);
+    int send_position_state(Motorisation::Commande &position);
     
     ///\brief reception de l'ordre avance
     ///cette ordre sert a positionner le robot en angle et en position
@@ -51,8 +51,8 @@ class Simu_motorisation {
 
     int p_ordre_courant;
     int p_dernier_ordre;
-    Commande simu_position;
-    Commande *simu_ordres;    
+    Motorisation::Commande simu_position;
+    Motorisation::Commande *simu_ordres;    
 };
 
 #endif
