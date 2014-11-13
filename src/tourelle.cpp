@@ -1,14 +1,12 @@
 
 #include "tourelle.hpp"
 
-Tourelle::Tourelle(int bus, uint8_t slave_addr, int my_nbr_mesures) :
-#ifndef SIMULATION
-I2c_interface(bus, slave_addr),
-#endif
+Tourelle::Tourelle(i2c_bus&  bus, uint8_t slave_addr, int my_nbr_mesures) :
+i2c_slave(bus, slave_addr),
 nbr_mesures(my_nbr_mesures),
 error(0)
 {
-  datas=(I2c_tourelle*)malloc(sizeof(I2c_tourelle)*nbr_mesures);
+  datas=(i2c_packet*)malloc(sizeof(i2c_packet)*nbr_mesures);
   distances=(double*)malloc(sizeof(double)*nbr_mesures);
   angles=(double*)malloc(sizeof(double)*nbr_mesures);
   for (int i=0; i<nbr_mesures; i++) {
@@ -27,9 +25,7 @@ Tourelle::~Tourelle() {
 
 int Tourelle::get_datas() {
   int r=0;
-#ifndef SIMULATION
-  r=i2c_read('D', (uint8_t *)datas, sizeof(datas));
-#endif
+  r=fast_read('D', (uint8_t *)datas, sizeof(datas));
   if (r==-1) {
     return r;
   }
@@ -43,18 +39,17 @@ int Tourelle::get_datas() {
 int Tourelle::get_error() {
   uint8_t error=0;
   int r=0;
-#ifndef SIMULATION
-  r=i2c_read('E', &error, 1);
-#endif
+  r=fast_read('E', &error, 1);
   if (r==-1) return r;
   return error;
 }
 
 int Tourelle::set_instruction(uint8_t instruction) {
   int r=0;
-#ifndef SIMULATION
-  r = i2c_write('I', &instruction, 1);
-#endif
+  uint8_t cmd[2];
+  cmd[0] = 'I';
+  cmd[1] = instruction;
+  r = this->write(cmd, 2);
   return r;
 }
 
