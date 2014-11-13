@@ -26,6 +26,10 @@
 #include "i2c_bus.hpp"
 #include "i2c_slave.hpp"
 
+#ifdef SIMULATION
+class Simu_motorisation;
+#endif
+
 ///\class Motorisation
 ///\brief Classe permettant de communiquer avec l'asservisssment
 ///Cette classe fait le pont entre la vrai carte d'asservissement et le haut niveau.
@@ -62,7 +66,10 @@ class Motorisation : public i2c_slave {
       ///\param[in] posY position initial en Y
       ///\param[in] posTheta position initial en Theta
       Motorisation( i2c_bus &mybus, 
-                    uint8_t slave_addr, 
+                    uint8_t slave_addr,
+#ifdef SIMULATION
+                    Simu_motorisation &my_simu_asserv,
+#endif
                     unsigned int etat, 
                     double posX, 
                     double posY, 
@@ -118,11 +125,14 @@ class Motorisation : public i2c_slave {
       ///\param[out] myCommande reference sur la structure commande de destination
       int i2c_packetToCommande(const I2c_packet &myI2c_packet, Commande &myCommande);
 
-      void update();
-
       I2c_packet i2c_envoie; //!<structure i2c_packet qui sert a envoyer des octets sur le bus i2c
       Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
       Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
+
+    protected :
+#ifdef SIMULATION
+      Simu_motorisation *simu_asserv;
+#endif
 
 };
 

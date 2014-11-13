@@ -3,11 +3,17 @@
 
 Motorisation::Motorisation(i2c_bus &mybus, 
                            uint8_t slave_addr, 
+#ifdef SIMULATION
+                    Simu_motorisation &my_simu_asserv,
+#endif
                            unsigned int etat, 
                            double posX, 
                            double posY, 
                            double posTheta) :
 i2c_slave(mybus, slave_addr)
+#ifdef SIMULATION
+,simu_asserv(&my_simu_asserv)
+#endif
 {
   commande_etat_courant.Type=etat;
   commande_etat_courant.X=posX;
@@ -152,9 +158,6 @@ int Motorisation::i2c_packetToCommande(const I2c_packet &myI2c_packet,
   myCommande.Y=signe[1]*((double)(temp[1]))/10.0;
   myCommande.Theta=signe[2]*((double)(temp[2]))/10000.0;
   return 0;
-}
-
-void Motorisation::update() {
 }
 
 
