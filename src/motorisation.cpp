@@ -31,18 +31,14 @@ Motorisation::~Motorisation() {
 
 int Motorisation::stop_force() {
   i2c_envoie.Type=STOP_F;
-#ifndef SIMULATION
-  this->write(i2c_envoie.Type, i2c_envoie.X, 12);
-#endif
+  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   return 0;
 }
 
 int Motorisation::status_robot() {
   i2c_envoie.Type=STATUS_ROB;
   int r=0;
-#ifndef SIMULATION
-  r=fast_read(i2c_envoie.Type, &i2c_envoie.Type, 1);
-#endif
+  r=fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, 1);
   if (r==-1) {
     return r;
   }
@@ -60,17 +56,13 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   commande_etat_courant.Y=obj_Y;
   commande_etat_courant.Theta=obj_Theta;
   commandeToI2c_packet(commande_etat_courant, i2c_envoie);
-#ifndef SIMULATION
-  this->write(i2c_envoie.Type, i2c_envoie.X, 12);
-#endif
+  this->write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
   return 0;
 }
   
 int Motorisation::get_position_state() {
   i2c_envoie.Type=POSITION_R;
-#ifndef SIMULATION
-  fast_read(i2c_envoie.Type, i2c_envoie.X-1, 13);
-#endif
+  fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
   /*
   printf("etat_courant\n");
@@ -87,9 +79,7 @@ int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
-#ifndef SIMULATION
-  this->write(i2c_envoie.Type, i2c_envoie.X, 12);
-#endif
+  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   return 0;
 }
 
@@ -100,9 +90,7 @@ int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
-#ifndef SIMULATION
-  this->write(i2c_envoie.Type, i2c_envoie.X, 12);
-#endif
+  this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   return 0;
 }
 
