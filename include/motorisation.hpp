@@ -82,10 +82,6 @@ class Motorisation : public i2c_slave {
       ///\return 0 si tout s'est bien passe, -1 sinon
       int stop_force();
 
-      ///\brief demande a l'asservissement si le robot est bloque
-      ///\return 0 si tout s'est bien passe, -1 sinon
-      int status_robot();
-
       ///\brief force la position du robot 
       ///on vient forcer l'etat et la position de l'asservissment du robot en i2c avec ce qui est mis dans la structure commmande_ordre
       ///\param[in] obj_X force la position en X a obj_X

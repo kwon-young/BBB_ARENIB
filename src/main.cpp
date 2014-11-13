@@ -57,7 +57,10 @@ int main (int argc, char *argv[]) {
 	///Simulation
   //Motorisation
 	#ifdef SIMULATION
-	Simu_motorisation simu_motorisation(etat,position_x,position_y,theta);
+	Simu_motorisation simu_motorisation(STOP,
+                                      position_x/1000.0,
+                                      position_y/1000.0,
+                                      theta/10.0);
 	#endif
 	
 	///Periphériques

@@ -1,5 +1,6 @@
 
 #include "simu_motorisation.hpp"
+#include <iostream>
 
 Simu_motorisation::Simu_motorisation( uint8_t etat, 
                                       double posX, 
@@ -73,20 +74,90 @@ int Simu_motorisation::recv_avance(double obj_X, double obj_Y, double obj_Theta)
 }
 
 int Simu_motorisation::update() {
+  const float dt = _delay.getElapsedTime().asSeconds();
+  const float diametre_roue=0.06; //6cm à vérifier
+  const float vitesse_max=3.0; //rad*s-1 à mesurer
+  
+  _delay.restart();
+  
+  //Mise à jour de la position
+  sf::Vector2f pPos(simu_position.X, simu_position.Y);
+  sf::Vector2f nPos = pPos + _speed*dt;
+  simu_position.X = nPos.x;
+  simu_position.Y = nPos.x;
+  
+  //Mise à jour angle 
+  double pTheta=2.0*PI*simu_position.Theta/360.0;
+  double nTheta=pTheta + _speedTheta*dt;
+  simu_position.Theta=nTheta*360.0/(2.0*PI);
+  
+  
   Motorisation::Commande obj = simu_ordres[p_ordre_courant];
   Motorisation::Commande diff;
   diff.X     = obj.X - simu_position.X;
   diff.Y     = obj.Y - simu_position.Y;
-  double Theta = atan2(diff.Y, diff.X);
+  double Theta_B = -fmod(atan2(diff.Y, diff.X),2.0*PI);
+  diff.Theta = fmod(obj.Theta-nTheta,2.0*PI);
   double u=sqrt(diff.X*diff.X + diff.Y*diff.Y);
-  double u_x=u*cos(Theta);
-  double u_y=u*sin(Theta);
-  //verification
-  //printf("X %lf | Y ", simu_position.X+u_x);
-  //printf("%lf\n", simu_position.Y+u_y);
-  //printf("Theta %lf\n", Theta*180.0/PI);
-  double sens=1;
+  if (u > 0.01 && u < 1.7) //olol le trapèze
+    u=1.7;
+  
+  double u_x=u*cos(Theta_B);
+  double u_y=u*sin(Theta_B); // coordonné du point arrivé sur le repère fixe au robot	
+  double r=(u_x-u_y);double l=(u_x+u_y);
+  
+  if (r > vitesse_max) r = vitesse_max;
+  if (r < -vitesse_max) r = -vitesse_max;
+  if (l > vitesse_max) l = vitesse_max;
+  if (l < -vitesse_max) l = -vitesse_max;
+  
+  
+	
+  double sens_U=0.0; double sens_T=0.0;
+  
+	if (u_y<0){
+		sens_U=-1; //une distance négative pour ordonner un recul du robot
+	}
+	else{
+		sens_U=1; //distance positive pour ordonner une avance du robot
+	}
 
+  switch (obj.Type)
+  {
+    case AVANCE:
+      _rotateSpeedRight=r;
+      _rotateSpeedLeft=l;
+      if ( u < 0.01 ) { // Au centimètre près
+        p_ordre_courant++;
+        if (p_ordre_courant >= NB_ORDRES) {
+          p_ordre_courant=0;
+        }
+      }
+      std::cout << "u " << u << std::endl;
+			break;
+    case TOURNE:
+      break;
+    default:
+      if (obj.Type == STOP && p_ordre_courant != p_dernier_ordre) {
+        p_ordre_courant++;
+        if (p_ordre_courant >= NB_ORDRES) {
+          p_ordre_courant=0;
+        }
+      }
+      _rotateSpeedRight=0; //Moteurs eteints
+      _rotateSpeedLeft=0;
+      break;
+		
+  }
+  
+  float mspeed=(_rotateSpeedRight+_rotateSpeedLeft)*0.5*diametre_roue*2*PI;
+  _speedTheta=(_rotateSpeedRight-_rotateSpeedLeft)*0.5*diametre_roue*2*PI;
+  _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
+  
+  
+  //std::cout << " simu_position.Theta " << simu_position.Theta*360.0/(2*PI) << std::endl;
+  
+/*
   if (obj.Type == AVANCE || obj.Type == TOURNE) {
     if (u < VITESSE_U) {
       if (fabs(obj.Theta-simu_position.Theta)<VITESSE_THETA) {
@@ -121,6 +192,7 @@ int Simu_motorisation::update() {
       p_ordre_courant=0;
     }
   }
+  */
 
   return 0;
 }

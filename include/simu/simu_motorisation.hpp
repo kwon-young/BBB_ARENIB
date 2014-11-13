@@ -6,8 +6,6 @@
 #include "motorisation.hpp"
 
 #define NB_ORDRES     4
-#define VITESSE_U     5
-#define VITESSE_THETA 0.05
 
 
 class Simu_motorisation {
@@ -51,8 +49,21 @@ class Simu_motorisation {
 
     int p_ordre_courant;
     int p_dernier_ordre;
-    Motorisation::Commande simu_position;
-    Motorisation::Commande *simu_ordres;    
+       
+    
+    private:
+      Motorisation::Commande simu_position;
+      Motorisation::Commande *simu_ordres; 
+    
+      sf::Clock _delay;
+      sf::Vector2f _acc;    //non utilisé
+      sf::Vector2f _speed;  //m.s-1
+      double _accTheta;     //non utilisé
+      double _speedTheta;   //rad*s-1
+      double _rotateSpeedRight; //Vitesse de rotations des roues rad*s-1
+      double _rotateSpeedLeft;
+      
+      
 };
 
 #endif

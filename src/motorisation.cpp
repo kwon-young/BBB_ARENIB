@@ -1,5 +1,6 @@
 
 #include "motorisation.hpp"
+#include "simu_motorisation.hpp"
 
 Motorisation::Motorisation(i2c_bus &mybus, 
                            uint8_t slave_addr, 
@@ -32,22 +33,11 @@ Motorisation::~Motorisation() {
 int Motorisation::stop_force() {
   i2c_envoie.Type=STOP_F;
   this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  //Surcouche simulation
+  #ifdef SIMULATION
+  simu_asserv->recv_stop_force();
+  #endif
   return 0;
-}
-
-int Motorisation::status_robot() {
-  i2c_envoie.Type=STATUS_ROB;
-  int r=0;
-  r=fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, 1);
-  if (r==-1) {
-    return r;
-  }
-  commande_etat_courant.Type=i2c_envoie.Type;
-  /*
-  printf("status_courant\n");
-  printf("\t%d\n", commande_etat_courant.Type);
-  */
-  return commande_etat_courant.Type;
 }
 
 int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
@@ -57,6 +47,13 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   commande_etat_courant.Theta=obj_Theta;
   commandeToI2c_packet(commande_etat_courant, i2c_envoie);
   this->write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
+  
+  //Surcouche simulation
+  #ifdef SIMULATION
+  simu_asserv->recv_position(obj_X,obj_Y,obj_Theta);
+  #endif
+  
+  
   return 0;
 }
   
@@ -64,12 +61,12 @@ int Motorisation::get_position_state() {
   i2c_envoie.Type=POSITION_R;
   fast_read(i2c_envoie.Type, (uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
-  /*
-  printf("etat_courant\n");
-  printf("\tX     = %lf\n", commande_etat_courant.X);
-  printf("\tY     = %lf\n", commande_etat_courant.Y);
-  printf("\tTheta = %lf\n", commande_etat_courant.Theta);
-  */
+  
+  //Surcouche simulation
+  #ifdef SIMULATION
+  simu_asserv->send_position_state(commande_etat_courant);
+  #endif
+  
   return 0;
 }
 
@@ -80,6 +77,12 @@ int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
   this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  
+  //Surcouche simulation
+  #ifdef SIMULATION
+  //TODO
+  #endif
+  
   return 0;
 }
 
@@ -91,6 +94,11 @@ int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
   commande_ordre.Theta=obj_Theta;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
   this->write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
+  
+  //Surcouche simulation
+  #ifdef SIMULATION
+  simu_asserv->recv_avance( obj_X,  obj_Y,  obj_Theta);
+  #endif
   return 0;
 }
 
