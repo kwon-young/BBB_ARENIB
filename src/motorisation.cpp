@@ -6,8 +6,9 @@ Motorisation::Motorisation(int bus,
                            unsigned int etat, 
                            double posX, 
                            double posY, 
-                           double posTheta) :
+                           double posTheta) 
 #ifndef SIMULATION
+:
 I2c_interface(bus, slave_addr)
 #endif
 {
@@ -17,8 +18,8 @@ I2c_interface(bus, slave_addr)
   commande_etat_courant.Theta=posTheta;
   commande_ordre.Type=0;
   commande_ordre.X=0.0;
-  commande_ordre.Y=0.0;;
-  commande_ordre.Theta=0.0;;
+  commande_ordre.Y=0.0;
+  commande_ordre.Theta=0.0;
   commandeToI2c_packet(commande_ordre, i2c_envoie);
 }
 
@@ -62,16 +63,18 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   return 0;
 }
   
-int Motorisation::get_position() {
+int Motorisation::get_position_state() {
   i2c_envoie.Type=POSITION_R;
 #ifndef SIMULATION
   i2c_read(i2c_envoie.Type, i2c_envoie.X-1, 13);
 #endif
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
+  /*
   printf("etat_courant\n");
   printf("\tX     = %lf\n", commande_etat_courant.X);
   printf("\tY     = %lf\n", commande_etat_courant.Y);
   printf("\tTheta = %lf\n", commande_etat_courant.Theta);
+  */
   return 0;
 }
 

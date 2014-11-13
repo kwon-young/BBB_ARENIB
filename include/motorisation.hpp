@@ -87,7 +87,7 @@ class Motorisation : public i2c_slave {
     ///\return 0 si tout s'est bien passe, -1 sinon
     int status_robot();
 
-    ///\brief force l'etat ou/et la position du robot 
+    ///\brief force la position du robot 
     ///on vient forcer l'etat et la position de l'asservissment du robot en i2c avec ce qui est mis dans la structure commmande_ordre
     ///\param[in] obj_X force la position en X a obj_X
     ///\param[in] obj_Y force la position en Y a obj_Y
@@ -95,10 +95,10 @@ class Motorisation : public i2c_slave {
     ///\return 0 si tout s'est bien passe, -1 sinon
     int set_position(double obj_X, double obj_Y, double obj_Theta);
 
-    ///\brief met a jour la position du robot dans etat_courant
+    ///\brief met a jour la position et l'etat du robot dans etat_courant
     ///on vient mettre a jour la position du robot dans commande_etat_courant en i2c avec l'asservissment
     ///\return 0 si tout s'est bien passe, -1 sinon
-    int get_position();
+    int get_position_state();
     
     ///\brief envoie l'ordre tourne a l'asservissement
     ///envoie l'ordre tourne en i2c a l'asservissement d'un angle en radian

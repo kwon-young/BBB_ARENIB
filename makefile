@@ -62,4 +62,4 @@ run:
 	$(EXEC)
 
 clean:
-	rm -rf $(OBJ_DIR)/*.o *.exe *~ */*~ $(CIBLE)
+	rm -rf $(OBJ_DIR)/*.o *.exe *~ */*~ */*/*~ $(CIBLE)
