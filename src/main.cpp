@@ -82,7 +82,7 @@ int main (int argc, char *argv[]) {
       (theta/10.0)*PI/180.0);
 #endif 
 
-    motorisation.avance(-1000.0, 0.0, 0.0);
+    motorisation.avance(10.0, -1000.0, 0.0);
 
     //double t=0;
   while (!ragequit) {

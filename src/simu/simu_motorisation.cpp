@@ -158,18 +158,15 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
 */
   Motorisation::Commande obj = simu_ordres[p_ordre_courant];
   if (obj.Type == AVANCE || obj.Type == TOURNE) {
-    _speedTheta = PI/180.0;
+    double theta_speed = PI/180.0;
     double u_speed=5;
     Motorisation::Commande diff;
     diff.X     = obj.X - simu_position.X;
     diff.Y     = obj.Y - simu_position.Y;
     double u=sqrt(diff.X*diff.X + diff.Y*diff.Y);
     double sens_rotation;
-    std::cout << "test1" << std::endl;
     if (u<u_speed) {
-    std::cout << "test2" << std::endl;
     }else {
-    std::cout << "test3" << std::endl;
       //calcul angle trajectoire : theta =0 sur y, [-3*PI/2, PI/2]
       double Theta_B = -PI/2.0+atan2(diff.Y, diff.X);
       //normalise de [-3*PI/2, PI/2] � [0, 2*PI]
@@ -181,12 +178,16 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
         diff.Theta-=2.0*PI;
       }
       //calcul du sens de rotation
-      if (diff.Theta > 0) {
+      if (diff.Theta > 0)
         sens_rotation=1;
-      } else 
+      else 
         sens_rotation=-1;
+      if (fabs(diff.Theta) < theta_speed)
+        simu_position.Theta=Theta_B;
+      else
+        simu_position.Theta+=sens_rotation*theta_speed;
     }
-    simu_position.Theta+=sens_rotation*_speedTheta;
+
     /*
     double u_x=u*cos(Theta_B);
     double u_y=u*sin(Theta_B); // coordonné du point arrivé sur le repère fixe au robot	
