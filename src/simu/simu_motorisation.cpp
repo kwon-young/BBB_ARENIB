@@ -29,7 +29,7 @@ Simu_motorisation::~Simu_motorisation() {
 int Simu_motorisation::recv_stop_force() {
   simu_position.Type  = STOP_F;
   for (int i=0; i<NB_ORDRES; i++) {
-    simu_ordres[i].Type  = STOP;
+    simu_ordres[i].Type  = STOP_F;
     simu_ordres[i].X     = 0;
     simu_ordres[i].Y     = 0;
     simu_ordres[i].Theta = 0;
@@ -59,10 +59,11 @@ int Simu_motorisation::send_position_state(Motorisation::Commande &position) {
 }
 
 int Simu_motorisation::recv_avance(double obj_X, double obj_Y, double obj_Theta) {
-  p_dernier_ordre++;
+    p_dernier_ordre++;
   if (p_dernier_ordre >= NB_ORDRES) {
     p_dernier_ordre=0;
   }
+    
   simu_ordres[p_dernier_ordre].Type  = AVANCE;
   simu_ordres[p_dernier_ordre].X     = obj_X;
   simu_ordres[p_dernier_ordre].Y     = obj_Y;
@@ -77,87 +78,12 @@ int Simu_motorisation::update() {
    const float vitesse_max=3.0; //rad*s-1 a mesurer
 
    _delay.restart();
-/*
-  //Mise à jour de la position
-  sf::Vector2f pPos(simu_position.X, simu_position.Y);
-  sf::Vector2f nPos = pPos + _speed*dt;
-  simu_position.X = nPos.x;
-  simu_position.Y = nPos.x;
-
-  //Mise à jour angle 
-  double pTheta=2.0*PI*simu_position.Theta/360.0;
-  double nTheta=pTheta + _speedTheta*dt;
-  simu_position.Theta=nTheta*360.0/(2.0*PI);
-
-
   Motorisation::Commande obj = simu_ordres[p_ordre_courant];
-  Motorisation::Commande diff;
-  diff.X     = obj.X - simu_position.X;
-  diff.Y     = obj.Y - simu_position.Y;
-  double Theta_B = -fmod(atan2(diff.Y, diff.X),2.0*PI);
-  diff.Theta = fmod(obj.Theta-nTheta,2.0*PI);
-  double u=sqrt(diff.X*diff.X + diff.Y*diff.Y);
-  if (u > 0.01 && u < 1.7) //olol le trapèze
-  u=1.7;
-
-  double u_x=u*cos(Theta_B);
-  double u_y=u*sin(Theta_B); // coordonné du point arrivé sur le repère fixe au robot	
-  double r=(u_x-u_y);double l=(u_x+u_y);
-
-  if (r > vitesse_max) r = vitesse_max;
-  if (r < -vitesse_max) r = -vitesse_max;
-  if (l > vitesse_max) l = vitesse_max;
-  if (l < -vitesse_max) l = -vitesse_max;
-
-
-
-  double sens_U=0.0; double sens_T=0.0;
-
-  if (u_y<0){
-  sens_U=-1; //une distance négative pour ordonner un recul du robot
-  }
-  else{
-  sens_U=1; //distance positive pour ordonner une avance du robot
-  }
-
-  switch (obj.Type)
-  {
-  case AVANCE:
-  _rotateSpeedRight=r;
-  _rotateSpeedLeft=l;
-  if ( u < 0.01 ) { // Au centimètre près
-  p_ordre_courant++;
-  if (p_ordre_courant >= NB_ORDRES) {
-  p_ordre_courant=0;
-  }
-  }
-  std::cout << "u " << u << std::endl;
-  break;
-  case TOURNE:
-  break;
-  default:
-  if (obj.Type == STOP && p_ordre_courant != p_dernier_ordre) {
-  p_ordre_courant++;
-  if (p_ordre_courant >= NB_ORDRES) {
-  p_ordre_courant=0;
-  }
-  }
-  _rotateSpeedRight=0; //Moteurs eteints
-  _rotateSpeedLeft=0;
-  break;
-
-}
-
-float mspeed=(_rotateSpeedRight+_rotateSpeedLeft)*0.5*diametre_roue*2*PI;
-_speedTheta=(_rotateSpeedRight-_rotateSpeedLeft)*0.5*diametre_roue*2*PI;
-_speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
-
-*/
-  Motorisation::Commande obj = simu_ordres[p_ordre_courant];
+    simu_position.Type  = obj.Type;
   if (obj.Type == AVANCE || obj.Type == TOURNE) {
     //attention, il ne faut pas que la vitesse soit trop lente
-    double theta_speed = PI/180.0;
-    double u_speed=10;
+    double theta_speed = (PI/180.0)*1000.0*dt/6.0;
+    double u_speed=5000.0*dt/6.0;
     Motorisation::Commande diff;
     diff.X     = obj.X - simu_position.X;
     diff.Y     = obj.Y - simu_position.Y;
@@ -169,25 +95,23 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
       simu_position.Y=obj.Y;
       //calcul du delta d'angle entre le theta courant et le theta de l'objectif [0, 2*PI]
       diff.Theta = (obj.Theta-simu_position.Theta);
-      std::cout << "diff avant" << diff.Theta*2.0*PI << std::endl;
       double diff_2PI = fabs(diff.Theta-2*PI);
       double diff2PI = fabs(diff.Theta+2*PI);
-      if (diff_2PI <diff.Theta) {
+      if (diff_2PI <fabs(diff.Theta)) {
         diff.Theta-=2.0*PI;
-      }else if (diff2PI < diff.Theta) {
+      }else if (diff2PI < fabs(diff.Theta)) {
         diff.Theta+=2.0*PI;
       }
-      std::cout << "diff apres" << diff.Theta*2.0*PI << std::endl;
       //calcul du sens de rotation
       if (diff.Theta > 0) {
-        std::cout << "sens trigo" << std::endl;
         sens_rotation=1;
       } else {
-        std::cout << "sens inverse trigo" << std::endl;
         sens_rotation=-1;
       }
-      if (fabs(diff.Theta) < theta_speed)
+      if (fabs(diff.Theta) < theta_speed) {
         simu_position.Theta=obj.Theta;
+        passe_ordre_suivant();
+      }
       else
         simu_position.Theta+=sens_rotation*theta_speed;
       simu_position.Theta=fmod(simu_position.Theta, 2.0*PI);
@@ -197,21 +121,18 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
       //normalise de [-3*PI/2, PI/2] � [0, 2*PI]
       if (Theta_B<0) Theta_B+=2.0*PI;
       //calcul du delta d'angle entre le theta courant et le theta de la trajectoire [0, 2*PI]
-        std::cout << "thetab : " << Theta_B*180.0/PI << std::endl;
       diff.Theta = Theta_B-simu_position.Theta;
       double diff_2PI = fabs(diff.Theta-2*PI);
       double diff2PI = fabs(diff.Theta+2*PI);
-      if (diff_2PI <diff.Theta) {
+      if (diff_2PI <fabs(diff.Theta)) {
         diff.Theta-=2.0*PI;
-      }else if (diff2PI < diff.Theta) {
+      }else if (diff2PI < fabs(diff.Theta)) {
         diff.Theta+=2.0*PI;
       }
       //calcul du sens de rotation
       if (diff.Theta > 0) {
-        std::cout << "sens trigo" << std::endl;
         sens_rotation=1;
       } else {
-        std::cout << "sens inverse trigo" << std::endl;
         sens_rotation=-1;
       }
       //std::cout << "avant simu_t : " << simu_position.Theta*180.0/PI << std::endl;
@@ -236,17 +157,19 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
         std::cout << "X : " << u_x << std::endl;
         std::cout << "Y : " << u_y << std::endl;
         */
-          std::cout << "avance" << std::endl;
           simu_position.X+=-u_speed*sin(simu_position.Theta);
           simu_position.Y+=u_speed*cos(simu_position.Theta);
       }
     }
-
-  } else {
+  } else if (obj.Type == STOP_F) {
+    if (p_ordre_courant!=p_dernier_ordre)
+    {
+      passe_ordre_suivant();
+    }
+  } else  {
     passe_ordre_suivant();
   }
-
-return 0;
+  return 0;
 }
 
 void Simu_motorisation::show_position() {
@@ -289,7 +212,6 @@ void Simu_motorisation::show_ordres(int ordre_id) {
 void Simu_motorisation::passe_ordre_suivant()
 {
   if (p_ordre_courant == p_dernier_ordre) {
-    simu_position.Type  = STOP;
     for (int i=0; i<NB_ORDRES; i++) {
       simu_ordres[i].Type  = STOP;
       simu_ordres[i].X     = 0;

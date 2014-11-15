@@ -50,14 +50,14 @@ int main (int argc, char *argv[]) {
   ///Variable d'etat
   std::string robot_name="EchecCritique"; 
   sf::Uint8 etat=0;
-  /*
   sf::Int16 position_x=(rand()%3000)-1500; //mm
   sf::Int16 position_y=(rand()%2000)-1000; //mm
   sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
-  */
+  /*
   sf::Int16 position_x=0; //mm
   sf::Int16 position_y=0; //mm
   sf::Int16 theta=0;      //degrees*10 [0, 3600]
+  */
   sf::Uint8 color_r=255;
   sf::Uint8 color_g=0;
   sf::Uint8 color_b=0;
@@ -92,28 +92,24 @@ int main (int argc, char *argv[]) {
 #endif 
     double objX    =(rand()%3000)-1500;
     double objY    =(rand()%2000)-1000;
-    double objTheta=rand()%3600;
+    double objTheta=(rand()%3600)*PI/(180.0*10.0);
     std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
-    //motorisation.avance(objX, objY, objTheta);
-    motorisation.avance(500, -500, 0);
+    motorisation.avance(objX, objY, objTheta);
+    objX    =(rand()%3000)-1500;
+    objY    =(rand()%2000)-1000;
+    objTheta=(rand()%3600)*PI/(180.0*10.0);
+    motorisation.avance(objX, objY, objTheta);
+    objX    =(rand()%3000)-1500;
+    objY    =(rand()%2000)-1000;
+    objTheta=(rand()%3600)*PI/(180.0*10.0);
+    motorisation.avance(objX, objY, objTheta);
+    motorisation.stop_force();
+    motorisation.avance(objX, objY, objTheta);
+
+    simu_motorisation.show_ordres(4);
 
     //double t=0;
   while (!ragequit) {
-   /* 
-    motorisation.avance(cos(t*PI/180.0), sin(t*PI/180.0), 0.0);
-    if (t==90)
-      std::cout << "En avant" << std::endl;
-    else if (t==270)
-      std::cout << "En arriere" << std::endl;
-    else if (t==180)
-      std::cout << "A gauche" << std::endl;
-    else if (t==0)
-      std::cout << "A droite" << std::endl;
-   // std::cout << t << std::endl;
-    t++;
-    if (t==360)
-      t=0;
-   */
     if (motorisation.get_position_state() == -1)
     {
       std::cerr << "Error i2c motorisation.get_position_state()" << std::endl;
@@ -141,7 +137,7 @@ int main (int argc, char *argv[]) {
     socket.send(packet, sf::IpAddress(interface_ip), 2222);
 
 #ifdef SIMULATION
-    sf::sleep(sf::milliseconds(20));
+    sf::sleep(sf::milliseconds(5));
     simu_motorisation.update();
 #endif
   }
