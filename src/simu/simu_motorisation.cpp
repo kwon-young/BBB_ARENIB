@@ -158,6 +158,7 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
 */
   Motorisation::Commande obj = simu_ordres[p_ordre_courant];
   if (obj.Type == AVANCE || obj.Type == TOURNE) {
+    //attention, il ne faut pas que la vitesse soit trop lente
     double theta_speed = PI/180.0;
     double u_speed=5;
     Motorisation::Commande diff;
@@ -165,7 +166,27 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
     diff.Y     = obj.Y - simu_position.Y;
     double u=sqrt(diff.X*diff.X + diff.Y*diff.Y);
     double sens_rotation;
+    double sens_deplacement;
     if (u<u_speed) {
+      simu_position.X=obj.X;
+      simu_position.Y=obj.Y;
+      //calcul du delta d'angle entre le theta courant et le theta de l'objectif [0, 2*PI]
+      diff.Theta = fmod((obj.Theta-simu_position.Theta), 2.0*PI);
+      //centrage de diff.Theta autour de simu_position.Theta => [simu_position.Theta-PI, simu_position.Theta+PI]
+      if (diff.Theta>(simu_position.Theta+PI)) {
+        diff.Theta-=2.0*PI;
+      }
+      //calcul du sens de rotation
+      if (diff.Theta > 0)
+        sens_rotation=1;
+      else 
+        sens_rotation=-1;
+
+      if (fabs(diff.Theta) < theta_speed)
+        simu_position.Theta=obj.Theta;
+      else
+        simu_position.Theta+=sens_rotation*theta_speed;
+      simu_position.Theta=fmod(simu_position.Theta, 2.0*PI);
     }else {
       //calcul angle trajectoire : theta =0 sur y, [-3*PI/2, PI/2]
       double Theta_B = -PI/2.0+atan2(diff.Y, diff.X);
@@ -182,16 +203,27 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
         sens_rotation=1;
       else 
         sens_rotation=-1;
+      
       if (fabs(diff.Theta) < theta_speed)
         simu_position.Theta=Theta_B;
       else
         simu_position.Theta+=sens_rotation*theta_speed;
+      simu_position.Theta=fmod(simu_position.Theta, 2.0*PI);
+      //on translate si diff.Theta < PI/4
+      if (fabs(diff.Theta) < PI/4.0) {
+        /*
+        double u_x=-u*sin(Theta_B);
+        double u_y=u*cos(Theta_B); // coordonné du point arrivé sur le repère fixe au robot	
+        std::cout << "T : " << Theta_B*180.0/PI << std::endl;
+        std::cout << "U : " << u << std::endl;
+        std::cout << "X : " << u_x << std::endl;
+        std::cout << "Y : " << u_y << std::endl;
+        */
+          simu_position.X+=-u_speed*sin(simu_position.Theta);
+          simu_position.Y+=u_speed*cos(simu_position.Theta);
+      }
     }
 
-    /*
-    double u_x=u*cos(Theta_B);
-    double u_y=u*sin(Theta_B); // coordonné du point arrivé sur le repère fixe au robot	
-    */
   } else if (obj.Type == STOP && p_ordre_courant != p_dernier_ordre) {
     p_ordre_courant++;
     if (p_ordre_courant >= NB_ORDRES) {

@@ -14,6 +14,8 @@
 #include "motorisation.hpp"
 #include <csignal>
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 
 bool ragequit=false; //:D
 
@@ -23,6 +25,7 @@ void handle_sigint(int parameter)
 }
 
 int main (int argc, char *argv[]) {
+  srand(time(NULL));
 
   ///Interrupts
   signal (SIGINT, handle_sigint);
@@ -47,9 +50,9 @@ int main (int argc, char *argv[]) {
   ///Variable d'etat
   std::string robot_name="EchecCritique"; 
   sf::Uint8 etat=0;
-  sf::Int16 position_x=0; //mm
-  sf::Int16 position_y=0; //mm
-  sf::Int16 theta=0;      //degrees*10 [0, 3600]
+  sf::Int16 position_x=(rand()%3000)-1500; //mm
+  sf::Int16 position_y=(rand()%2000)-1000; //mm
+  sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
   sf::Uint8 color_r=255;
   sf::Uint8 color_g=0;
   sf::Uint8 color_b=0;
@@ -82,7 +85,7 @@ int main (int argc, char *argv[]) {
       (theta/10.0)*PI/180.0);
 #endif 
 
-    motorisation.avance(10.0, -1000.0, 0.0);
+    motorisation.avance((rand()%3000)-1500, (rand()%2000)-1000, rand()%3600);
 
     //double t=0;
   while (!ragequit) {
@@ -128,7 +131,7 @@ int main (int argc, char *argv[]) {
     socket.send(packet, sf::IpAddress(interface_ip), 2222);
 
 #ifdef SIMULATION
-    sf::sleep(sf::milliseconds(50));
+    sf::sleep(sf::milliseconds(5));
     simu_motorisation.update();
 #endif
   }
