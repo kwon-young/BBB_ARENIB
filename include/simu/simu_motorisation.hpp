@@ -57,7 +57,7 @@ class Simu_motorisation {
     
       sf::Clock _delay;
       sf::Vector2f _acc;    //non utilisé
-      sf::Vector2f _speed;  //m.s-1
+      sf::Vector2f _speed;  //mm.s-1
       double _accTheta;     //non utilisé
       double _speedTheta;   //rad*s-1
       double _rotateSpeedRight; //Vitesse de rotations des roues rad*s-1
