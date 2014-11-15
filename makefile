@@ -3,7 +3,7 @@ CXX=g++
 DEBUG=yes
 STATIC=yes
 
-CIBLE=BBB
+CIBLE=simu
 EXE=$(CIBLE)
 EXEC=$(EXE)
 SRC_DIR=src

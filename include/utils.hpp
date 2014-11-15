@@ -9,6 +9,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
 #include "pstdint.hpp"
+#include <cmath>
 
 #ifndef SIMULATION
 

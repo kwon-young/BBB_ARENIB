@@ -3,6 +3,8 @@
 #ifndef SIMU_MOTEURS____
 #define SIMU_MOTEURS____
 
+#include "utils.hpp"
+
 class Simu_moteurs
 {
   public:
