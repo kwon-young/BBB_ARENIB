@@ -74,8 +74,8 @@ int Simu_motorisation::recv_avance(double obj_X, double obj_Y, double obj_Theta)
 int Simu_motorisation::update() {
   
    const float dt = _delay.getElapsedTime().asSeconds();
-   const float diametre_roue=0.06; //6cm a verifier
-   const float vitesse_max=3.0; //rad*s-1 a mesurer
+   //const float diametre_roue=0.06; //6cm a verifier
+   //const float vitesse_max=3.0; //rad*s-1 a mesurer
 
    _delay.restart();
   Motorisation::Commande obj = simu_ordres[p_ordre_courant];
@@ -89,7 +89,6 @@ int Simu_motorisation::update() {
     diff.Y     = obj.Y - simu_position.Y;
     double u=sqrt(diff.X*diff.X + diff.Y*diff.Y);
     double sens_rotation;
-    double sens_deplacement;
     if (u<u_speed) {
       simu_position.X=obj.X;
       simu_position.Y=obj.Y;

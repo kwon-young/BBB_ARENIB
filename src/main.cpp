@@ -92,28 +92,19 @@ int main (int argc, char *argv[]) {
       position_y, 
       (theta/10.0)*PI/180.0);
 #endif 
-    double objX    =(rand()%3000)-1500;
-    double objY    =(rand()%2000)-1000;
-    double objTheta=(rand()%3600)*PI/(180.0*10.0);
-    std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
-    motorisation.avance(objX, objY, objTheta);
-    objX    =(rand()%3000)-1500;
-    objY    =(rand()%2000)-1000;
-    objTheta=(rand()%3600)*PI/(180.0*10.0);
-    motorisation.avance(objX, objY, objTheta);
-    objX    =(rand()%3000)-1500;
-    objY    =(rand()%2000)-1000;
-    objTheta=(rand()%3600)*PI/(180.0*10.0);
-    motorisation.avance(objX, objY, objTheta);
-    motorisation.stop_force();
-    motorisation.avance(objX, objY, objTheta);
+  //creation d'un thread de mise a jour de la position et de l'etat du robot
+  
+  sf::Thread t_updatePosition(Motorisation::updatePosition, &motorisation);
+  t_updatePosition.launch();
 
-    //double t=0;
+  double objX    =(rand()%3000)-1500;
+  double objY    =(rand()%2000)-1000;
+  double objTheta=(rand()%3600)*PI/(180.0*10.0);
+  std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
+  motorisation.avance(objX, objY, objTheta);
+
+  //double t=0;
   while (!ragequit) {
-    if (motorisation.get_position_state() == -1)
-    {
-      std::cerr << "Error i2c motorisation.get_position_state()" << std::endl;
-    }
 
     etat = motorisation.commande_etat_courant.Type;
     position_x = motorisation.commande_etat_courant.X;
@@ -142,9 +133,12 @@ int main (int argc, char *argv[]) {
 #endif
   }
 
-
+  motorisation.t_ragequit=true;
+  t_updatePosition.wait();
   return 0;
 
 }
+
+
 
 

@@ -120,14 +120,18 @@ class Motorisation : public i2c_slave {
       ///\param[out] myCommande reference sur la structure commande de destination
       int i2c_packetToCommande(const I2c_packet &myI2c_packet, Commande &myCommande);
 
-      I2c_packet i2c_envoie; //!<structure i2c_packet qui sert a envoyer des octets sur le bus i2c
+      static void updatePosition(Motorisation *motorisation);
+
       Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
       Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
+
+      static int t_ragequit;
 
     protected :
 #ifdef SIMULATION
       Simu_motorisation *simu_asserv;
 #endif
+      sf::Mutex m_commande_etat_courant;
 
 };
 
