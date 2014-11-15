@@ -50,13 +50,19 @@ int main (int argc, char *argv[]) {
   ///Variable d'etat
   std::string robot_name="EchecCritique"; 
   sf::Uint8 etat=0;
+  /*
   sf::Int16 position_x=(rand()%3000)-1500; //mm
   sf::Int16 position_y=(rand()%2000)-1000; //mm
   sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
+  */
+  sf::Int16 position_x=0; //mm
+  sf::Int16 position_y=0; //mm
+  sf::Int16 theta=0;      //degrees*10 [0, 3600]
   sf::Uint8 color_r=255;
   sf::Uint8 color_g=0;
   sf::Uint8 color_b=0;
 
+  std::cout << position_x << " | " << position_y << " | " << theta<< std::endl;
   ///Simulation
   //Motorisation
 #ifdef SIMULATION
@@ -84,8 +90,12 @@ int main (int argc, char *argv[]) {
       position_y, 
       (theta/10.0)*PI/180.0);
 #endif 
-
-    motorisation.avance((rand()%3000)-1500, (rand()%2000)-1000, rand()%3600);
+    double objX    =(rand()%3000)-1500;
+    double objY    =(rand()%2000)-1000;
+    double objTheta=rand()%3600;
+    std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
+    //motorisation.avance(objX, objY, objTheta);
+    motorisation.avance(500, -500, 0);
 
     //double t=0;
   while (!ragequit) {
@@ -131,7 +141,7 @@ int main (int argc, char *argv[]) {
     socket.send(packet, sf::IpAddress(interface_ip), 2222);
 
 #ifdef SIMULATION
-    sf::sleep(sf::milliseconds(5));
+    sf::sleep(sf::milliseconds(20));
     simu_motorisation.update();
 #endif
   }

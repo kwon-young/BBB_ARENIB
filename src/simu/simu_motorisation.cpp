@@ -160,7 +160,7 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
   if (obj.Type == AVANCE || obj.Type == TOURNE) {
     //attention, il ne faut pas que la vitesse soit trop lente
     double theta_speed = PI/180.0;
-    double u_speed=5;
+    double u_speed=10;
     Motorisation::Commande diff;
     diff.X     = obj.X - simu_position.X;
     diff.Y     = obj.Y - simu_position.Y;
@@ -171,17 +171,24 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
       simu_position.X=obj.X;
       simu_position.Y=obj.Y;
       //calcul du delta d'angle entre le theta courant et le theta de l'objectif [0, 2*PI]
-      diff.Theta = fmod((obj.Theta-simu_position.Theta), 2.0*PI);
-      //centrage de diff.Theta autour de simu_position.Theta => [simu_position.Theta-PI, simu_position.Theta+PI]
-      if (diff.Theta>(simu_position.Theta+PI)) {
+      diff.Theta = (obj.Theta-simu_position.Theta);
+      std::cout << "diff avant" << diff.Theta*2.0*PI << std::endl;
+      double diff_2PI = fabs(diff.Theta-2*PI);
+      double diff2PI = fabs(diff.Theta+2*PI);
+      if (diff_2PI <diff.Theta) {
         diff.Theta-=2.0*PI;
+      }else if (diff2PI < diff.Theta) {
+        diff.Theta+=2.0*PI;
       }
+      std::cout << "diff apres" << diff.Theta*2.0*PI << std::endl;
       //calcul du sens de rotation
-      if (diff.Theta > 0)
+      if (diff.Theta > 0) {
+        std::cout << "sens trigo" << std::endl;
         sens_rotation=1;
-      else 
+      } else {
+        std::cout << "sens inverse trigo" << std::endl;
         sens_rotation=-1;
-
+      }
       if (fabs(diff.Theta) < theta_speed)
         simu_position.Theta=obj.Theta;
       else
@@ -193,23 +200,36 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
       //normalise de [-3*PI/2, PI/2] à [0, 2*PI]
       if (Theta_B<0) Theta_B+=2.0*PI;
       //calcul du delta d'angle entre le theta courant et le theta de la trajectoire [0, 2*PI]
-      diff.Theta = fmod(Theta_B-simu_position.Theta, 2.0*PI);
-      //centrage de diff.Theta autour de simu_position.Theta => [simu_position.Theta-PI, simu_position.Theta+PI]
-      if (diff.Theta>(simu_position.Theta+PI)) {
+        std::cout << "thetab : " << Theta_B*180.0/PI << std::endl;
+      diff.Theta = Theta_B-simu_position.Theta;
+      double diff_2PI = fabs(diff.Theta-2*PI);
+      double diff2PI = fabs(diff.Theta+2*PI);
+      if (diff_2PI <diff.Theta) {
         diff.Theta-=2.0*PI;
+      }else if (diff2PI < diff.Theta) {
+        diff.Theta+=2.0*PI;
       }
       //calcul du sens de rotation
-      if (diff.Theta > 0)
+      if (diff.Theta > 0) {
+        std::cout << "sens trigo" << std::endl;
         sens_rotation=1;
-      else 
+      } else {
+        std::cout << "sens inverse trigo" << std::endl;
         sens_rotation=-1;
-      
+      }
+      //std::cout << "avant simu_t : " << simu_position.Theta*180.0/PI << std::endl;
       if (fabs(diff.Theta) < theta_speed)
         simu_position.Theta=Theta_B;
       else
         simu_position.Theta+=sens_rotation*theta_speed;
-      simu_position.Theta=fmod(simu_position.Theta, 2.0*PI);
+      //std::cout << "pendant simu_t : " << simu_position.Theta*180.0/PI << std::endl;
+      if (simu_position.Theta > 2.0*PI)
+        simu_position.Theta-=2.0*PI;
+      else if (simu_position.Theta < 0) 
+        simu_position.Theta+=2.0*PI; 
+      //std::cout << "apres simu_t : " << simu_position.Theta*180.0/PI << std::endl;
       //on translate si diff.Theta < PI/4
+      //std::cout << "diff_t : " << diff.Theta*180.0/PI << std::endl;
       if (fabs(diff.Theta) < PI/4.0) {
         /*
         double u_x=-u*sin(Theta_B);
@@ -219,6 +239,7 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
         std::cout << "X : " << u_x << std::endl;
         std::cout << "Y : " << u_y << std::endl;
         */
+          std::cout << "avance" << std::endl;
           simu_position.X+=-u_speed*sin(simu_position.Theta);
           simu_position.Y+=u_speed*cos(simu_position.Theta);
       }
