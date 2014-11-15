@@ -27,10 +27,7 @@ Simu_motorisation::~Simu_motorisation() {
 }
 
 int Simu_motorisation::recv_stop_force() {
-  simu_position.Type  = STOP;
-  simu_position.X     = 0;
-  simu_position.Y     = 0;
-  simu_position.Theta = 0;
+  simu_position.Type  = STOP_F;
   for (int i=0; i<NB_ORDRES; i++) {
     simu_ordres[i].Type  = STOP;
     simu_ordres[i].X     = 0;
@@ -74,13 +71,13 @@ int Simu_motorisation::recv_avance(double obj_X, double obj_Y, double obj_Theta)
 }
 
 int Simu_motorisation::update() {
-  /*
-     const float dt = _delay.getElapsedTime().asSeconds();
-     const float diametre_roue=0.06; //6cm à vérifier
-     const float vitesse_max=3.0; //rad*s-1 à mesurer
+  
+   const float dt = _delay.getElapsedTime().asSeconds();
+   const float diametre_roue=0.06; //6cm a verifier
+   const float vitesse_max=3.0; //rad*s-1 a mesurer
 
-     _delay.restart();
-
+   _delay.restart();
+/*
   //Mise à jour de la position
   sf::Vector2f pPos(simu_position.X, simu_position.Y);
   sf::Vector2f nPos = pPos + _speed*dt;
@@ -245,11 +242,8 @@ _speed=sf::Vector2f(cos(nTheta),sin(nTheta))*mspeed;
       }
     }
 
-  } else if (obj.Type == STOP && p_ordre_courant != p_dernier_ordre) {
-    p_ordre_courant++;
-    if (p_ordre_courant >= NB_ORDRES) {
-      p_ordre_courant=0;
-    }
+  } else {
+    passe_ordre_suivant();
   }
 
 return 0;
@@ -289,6 +283,28 @@ void Simu_motorisation::show_ordres(int ordre_id) {
     printf("\tX     = %lf\n", simu_ordres[ordre_id].X);
     printf("\tY     = %lf\n", simu_ordres[ordre_id].Y);
     printf("\tTheta = %lf\n", simu_ordres[ordre_id].Theta);
+  }
+}
+
+void Simu_motorisation::passe_ordre_suivant()
+{
+  if (p_ordre_courant == p_dernier_ordre) {
+    simu_position.Type  = STOP;
+    for (int i=0; i<NB_ORDRES; i++) {
+      simu_ordres[i].Type  = STOP;
+      simu_ordres[i].X     = 0;
+      simu_ordres[i].Y     = 0;
+      simu_ordres[i].Theta = 0;
+    }
+    p_ordre_courant=0;
+    p_dernier_ordre=0;
+  }
+  else  {
+    p_ordre_courant++;
+    if (p_ordre_courant >= NB_ORDRES) {
+      p_ordre_courant=0;
+    }
+    simu_position.Type=simu_ordres[p_ordre_courant].Type;
   }
 }
 
