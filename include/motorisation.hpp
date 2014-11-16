@@ -126,6 +126,7 @@ class Motorisation : public i2c_slave {
       Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
 
       static int t_ragequit;
+      sf::Thread t_updatePosition;
 
     protected :
 #ifdef SIMULATION

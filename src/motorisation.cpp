@@ -16,11 +16,13 @@ Motorisation::Motorisation(i2c_bus &mybus,
                            double posX, 
                            double posY, 
                            double posTheta) :
-i2c_slave(mybus, slave_addr)
+i2c_slave(mybus, slave_addr),
+t_updatePosition(&Motorisation::updatePosition, this)
 #ifdef SIMULATION
 ,simu_asserv(&my_simu_asserv)
 #endif
 {
+  t_updatePosition.launch();
   m_commande_etat_courant.lock();
   commande_etat_courant.Type=etat;
   commande_etat_courant.X=posX;

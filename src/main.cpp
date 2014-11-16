@@ -92,10 +92,6 @@ int main (int argc, char *argv[]) {
       position_y, 
       (theta/10.0)*PI/180.0);
 #endif 
-  //creation d'un thread de mise a jour de la position et de l'etat du robot
-  
-  sf::Thread t_updatePosition(Motorisation::updatePosition, &motorisation);
-  t_updatePosition.launch();
 
   double objX    =(rand()%3000)-1500;
   double objY    =(rand()%2000)-1000;
@@ -106,7 +102,15 @@ int main (int argc, char *argv[]) {
   //double t=0;
   while (!ragequit) {
 
+
     etat = motorisation.commande_etat_courant.Type;
+    if (etat==STOP) {
+      objX    =(rand()%3000)-1500;
+      objY    =(rand()%2000)-1000;
+      objTheta=(rand()%3600)*PI/(180.0*10.0);
+      std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
+      motorisation.avance(objX, objY, objTheta);
+    }
     position_x = motorisation.commande_etat_courant.X;
     position_y = motorisation.commande_etat_courant.Y;
     theta = motorisation.commande_etat_courant.Theta*180.0*10.0/PI;
@@ -134,7 +138,7 @@ int main (int argc, char *argv[]) {
   }
 
   motorisation.t_ragequit=true;
-  t_updatePosition.wait();
+  motorisation.t_updatePosition.wait();
   return 0;
 
 }
