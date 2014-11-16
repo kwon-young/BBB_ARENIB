@@ -85,8 +85,8 @@ int main (int argc, char *argv[]) {
 
   ///Variable d'etat
   sf::Uint8 etat=0;
-  sf::Int16 position_x=(rand()%3000)-1500; //mm
-  sf::Int16 position_y=(rand()%2000)-1000; //mm
+  sf::Int16 position_x=(rand()%2500)-1250; //mm
+  sf::Int16 position_y=(rand()%1500)-750; //mm
   sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
   /*
      sf::Int16 position_x=0; //mm
@@ -130,8 +130,8 @@ int main (int argc, char *argv[]) {
   sf::Thread t_updatePosition(Motorisation::update_thread, &motorisation);
   t_updatePosition.launch();
 
-  double objX    =(rand()%3000)-1500;
-  double objY    =(rand()%2000)-1000;
+  double objX    =(rand()%2500)-1250;
+  double objY    =(rand()%1500)-750;
   double objTheta=(rand()%3600)*PI/(180.0*10.0);
   std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
   motorisation.avance(objX, objY, objTheta);
@@ -140,8 +140,8 @@ int main (int argc, char *argv[]) {
   while (!ragequit) {
     motorisation.get_position_HN(etat, position_x, position_y, theta);
     if (etat==STOP) {
-      objX    =(rand()%3000)-1500;
-      objY    =(rand()%2000)-1000;
+      objX    =(rand()%2500)-1250;
+      objY    =(rand()%1500)-750;
       objTheta=(rand()%3600)*PI/(180.0*10.0);
       std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
       motorisation.avance(objX, objY, objTheta);

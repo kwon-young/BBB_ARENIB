@@ -22,7 +22,6 @@ class Tourelle : public i2c_slave {
     int set_instruction(uint8_t instruction);
 
     int nbr_mesures;
-    i2c_packet *datas;
     double *distances;
     double *angles;
     uint8_t error;

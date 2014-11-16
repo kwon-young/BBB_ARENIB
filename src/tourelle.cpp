@@ -6,24 +6,23 @@ i2c_slave(bus, slave_addr),
 nbr_mesures(my_nbr_mesures),
 error(0)
 {
-  datas=(i2c_packet*)malloc(sizeof(i2c_packet)*nbr_mesures);
   distances=(double*)malloc(sizeof(double)*nbr_mesures);
   angles=(double*)malloc(sizeof(double)*nbr_mesures);
+}
+
+Tourelle::~Tourelle() {
+  free(distances);
+  free(angles);
+}
+
+int Tourelle::get_datas() {
+  i2c_packet *datas=(i2c_packet*)malloc(sizeof(i2c_packet)*nbr_mesures);
   for (int i=0; i<nbr_mesures; i++) {
     datas[i].distance=0;
     datas[i].angle=0;
     distances[i]=0;
     angles[i]=0;
   }
-}
-
-Tourelle::~Tourelle() {
-  free(datas);
-  free(distances);
-  free(angles);
-}
-
-int Tourelle::get_datas() {
   int r=0;
   r=fast_read('D', (uint8_t *)datas, sizeof(datas));
   if (r==-1) {
@@ -33,6 +32,7 @@ int Tourelle::get_datas() {
     distances[i]=(double)(datas[i].distance);
     angles[i]=((double)(datas[i].angle))/10.0;
   }
+  free(datas);
   return 0;
 }
 
@@ -49,7 +49,7 @@ int Tourelle::set_instruction(uint8_t instruction) {
   uint8_t cmd[2];
   cmd[0] = 'I';
   cmd[1] = instruction;
-  r = this->write(cmd, 2);
+  r = write(cmd, 2);
   return r;
 }
 
