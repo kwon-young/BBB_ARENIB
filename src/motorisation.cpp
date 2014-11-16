@@ -22,17 +22,15 @@ t_updatePosition(&Motorisation::update_thread, this)
 ,simu_asserv(&my_simu_asserv)
 #endif
 {
-  t_updatePosition.launch();
-  m_commande_etat_courant.lock();
   commande_etat_courant.Type=etat;
   commande_etat_courant.X=posX;
   commande_etat_courant.Y=posY;
   commande_etat_courant.Theta=posTheta;
-  m_commande_etat_courant.unlock();
   commande_ordre.Type=0;
   commande_ordre.X=0.0;
   commande_ordre.Y=0.0;
   commande_ordre.Theta=0.0;
+  t_updatePosition.launch();
 }
 
 Motorisation::~Motorisation() {
@@ -56,16 +54,14 @@ int Motorisation::set_position(double obj_X, double obj_Y, double obj_Theta) {
   commande_etat_courant.X=obj_X;
   commande_etat_courant.Y=obj_Y;
   commande_etat_courant.Theta=obj_Theta;
-  m_commande_etat_courant.unlock();
   commandeToI2c_packet(commande_etat_courant, i2c_envoie);
-  write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
-  
   //Surcouche simulation
   #ifdef SIMULATION
-  m_commande_etat_courant.lock();
   simu_asserv->recv_position(obj_X,obj_Y,obj_Theta);
-  m_commande_etat_courant.unlock();
   #endif
+  m_commande_etat_courant.unlock();
+  write((uint8_t*)  &i2c_envoie, sizeof(I2c_packet));
+  
   
   
   return 0;
@@ -79,26 +75,24 @@ int Motorisation::get_position_state() {
   if (r==-1) {
     return r;
   }
+  m_commande_etat_courant.lock();
   i2c_packetToCommande(i2c_envoie, commande_etat_courant);
   
   //Surcouche simulation
   #ifdef SIMULATION
-  m_commande_etat_courant.lock();
   simu_asserv->send_position_state(commande_etat_courant);
-  m_commande_etat_courant.unlock();
   #endif
+  m_commande_etat_courant.unlock();
   
   return 0;
 }
 
 int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
   I2c_packet i2c_envoie;
-  m_commande_etat_courant.lock();
   commande_ordre.Type=TOURNE;
   commande_ordre.X=obj_X;
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
-  m_commande_etat_courant.unlock();
   commandeToI2c_packet(commande_ordre, i2c_envoie);
   write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   
@@ -113,20 +107,16 @@ int Motorisation::tourne(double obj_X, double obj_Y, double obj_Theta) {
 int Motorisation::avance(double obj_X, double obj_Y, double obj_Theta)
 {
   I2c_packet i2c_envoie;
-  m_commande_etat_courant.lock();
   commande_ordre.Type=AVANCE;
   commande_ordre.X=obj_X;
   commande_ordre.Y=obj_Y;
   commande_ordre.Theta=obj_Theta;
-  m_commande_etat_courant.unlock();
   commandeToI2c_packet(commande_ordre, i2c_envoie);
   write((uint8_t*) &i2c_envoie, sizeof(I2c_packet));
   
   //Surcouche simulation
   #ifdef SIMULATION
-  m_commande_etat_courant.lock();
   simu_asserv->recv_avance( obj_X,  obj_Y,  obj_Theta);
-  m_commande_etat_courant.unlock();
   #endif
   return 0;
 }
@@ -136,11 +126,9 @@ int Motorisation::commandeToI2c_packet(const Commande &myCommande,
   myI2c_packet.Type=myCommande.Type;
   uint8_t signe[3]={0};
   uint32_t masque=0xFF;
-  m_commande_etat_courant.lock();
   double monX=myCommande.X;
   double monY=myCommande.Y;
   double monTheta=myCommande.Theta;
-  m_commande_etat_courant.unlock();
   if (monX<0) {
     signe[0]=1;
     monX*=-1;
@@ -191,12 +179,33 @@ int Motorisation::i2c_packetToCommande(const I2c_packet &myI2c_packet,
 
 void Motorisation::update_thread(Motorisation *motorisation) {
   while(!t_ragequit) {
+    motorisation->get_mutex().lock();
     if (motorisation->get_position_state() == -1)
     {
       std::cerr << "Error i2c motorisation.get_position_state()" << std::endl;
     }
+    motorisation->get_mutex().unlock();
     sf::sleep(sf::milliseconds(5));
   }
 }
+
+void Motorisation::get_position_HN( sf::Uint8 &etat, 
+                                    sf::Int16 &position_x, 
+                                    sf::Int16 &position_y,
+                                    sf::Int16 &theta) {
+
+
+    m_commande_etat_courant.lock();
+    etat       = commande_etat_courant.Type;
+    position_x = commande_etat_courant.X;
+    position_y = commande_etat_courant.Y;
+    theta      = commande_etat_courant.Theta*180.0*10.0/PI;
+    m_commande_etat_courant.unlock();
+
+}
+
+
+
+
 
 

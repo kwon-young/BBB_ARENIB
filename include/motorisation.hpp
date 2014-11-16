@@ -122,6 +122,11 @@ class Motorisation : public i2c_slave {
 
       static void update_thread(Motorisation *motorisation);
 
+      void get_position_HN( sf::Uint8 &etat, 
+                            sf::Int16 &position_x, 
+                            sf::Int16 &position_y,
+                            sf::Int16 &theta);
+
       Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
       Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot
 

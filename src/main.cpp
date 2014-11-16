@@ -105,9 +105,7 @@ int main (int argc, char *argv[]) {
 
   //double t=0;
   while (!ragequit) {
-
-    motorisation.get_mutex().lock();
-    etat = motorisation.commande_etat_courant.Type;
+    motorisation.get_position_HN(etat, position_x, position_y, theta);
     if (etat==STOP) {
       objX    =(rand()%3000)-1500;
       objY    =(rand()%2000)-1000;
@@ -115,10 +113,6 @@ int main (int argc, char *argv[]) {
       std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
       motorisation.avance(objX, objY, objTheta);
     }
-    position_x = motorisation.commande_etat_courant.X;
-    position_y = motorisation.commande_etat_courant.Y;
-    theta = motorisation.commande_etat_courant.Theta*180.0*10.0/PI;
-    motorisation.get_mutex().unlock();
     
     
     packet.clear();
