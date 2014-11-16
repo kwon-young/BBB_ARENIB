@@ -18,12 +18,18 @@
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
+#define NEXT_IP 1
+#define NEXT_ROBOTNAME 2
 
 bool ragequit=false; //:D
 
 void handle_sigint(int parameter)
 {
   ragequit=true;
+}
+
+void print_help() {
+  printf("olol.help\n");
 }
 
 int main (int argc, char *argv[]) {
@@ -35,8 +41,36 @@ int main (int argc, char *argv[]) {
   ///Communication
   //Network
   std::string interface_ip="127.0.0.1";
-  if (argc > 1) {
-    interface_ip=argv[1];
+  std::string robot_name="EchecCritique"; 
+
+  int next_for=0;
+  for (int i=1; i<argc ; i++)
+  {
+    if (argv[i][0] == '-' && strlen(argv[i]) >= 2)
+    {
+      if (argv[i][1] == 'h' && argv[i][2] == 'e')
+        print_help();
+      else if (argv[i][1] == 'i')
+        next_for = NEXT_IP;
+      else if (argv[i][1] == 'n')
+        next_for = NEXT_ROBOTNAME;
+      else
+      {
+        printf("Warning");printf(" : Unknown option : %s\n",argv[i]);
+      }
+    }
+    else if (next_for == NEXT_IP)
+    {
+      interface_ip=argv[i];
+    }
+    else if (next_for == NEXT_ROBOTNAME)
+    {
+      robot_name=argv[i];     
+    }
+    else 
+    {
+      printf("Useless %s: ",argv[i]);
+    }
   }
   sf::UdpSocket socket;
   sf::Packet packet;
@@ -50,16 +84,15 @@ int main (int argc, char *argv[]) {
 #endif
 
   ///Variable d'etat
-  std::string robot_name="EchecCritique"; 
   sf::Uint8 etat=0;
   sf::Int16 position_x=(rand()%3000)-1500; //mm
   sf::Int16 position_y=(rand()%2000)-1000; //mm
   sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
   /*
-  sf::Int16 position_x=0; //mm
-  sf::Int16 position_y=0; //mm
-  sf::Int16 theta=0;      //degrees*10 [0, 3600]
-  */
+     sf::Int16 position_x=0; //mm
+     sf::Int16 position_y=0; //mm
+     sf::Int16 theta=0;      //degrees*10 [0, 3600]
+     */
   sf::Uint8 color_r=255;
   sf::Uint8 color_g=0;
   sf::Uint8 color_b=0;
@@ -93,7 +126,7 @@ int main (int argc, char *argv[]) {
       (theta/10.0)*PI/180.0);
 #endif 
   //creation d'un thread de mise a jour de la position et de l'etat du robot
-  
+
   sf::Thread t_updatePosition(Motorisation::update_thread, &motorisation);
   t_updatePosition.launch();
 
@@ -113,8 +146,8 @@ int main (int argc, char *argv[]) {
       std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
       motorisation.avance(objX, objY, objTheta);
     }
-    
-    
+
+
     packet.clear();
 
     packet << (sf::Uint8) 0x22;  //magic       // uint8
