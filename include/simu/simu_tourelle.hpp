@@ -13,6 +13,7 @@ class Simu_tourelle {
                   uint8_t my_simu_instruction, 
                   double  *my_simu_distances, 
                   double  *my_simu_angles); 
+    Simu_tourelle(const Simu_tourelle &my_simu_tourelle);
                   
 
     virtual ~Simu_tourelle();

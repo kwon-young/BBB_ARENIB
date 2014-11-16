@@ -125,10 +125,29 @@ int main (int argc, char *argv[]) {
       position_y, 
       (theta/10.0)*PI/180.0);
 #endif 
-  //creation d'un thread de mise a jour de la position et de l'etat du robot
 
-  sf::Thread t_updatePosition(Motorisation::update_thread, &motorisation);
-  t_updatePosition.launch();
+  ///Simulation
+  //Tourelle
+#ifdef SIMULATION
+  Simu_tourelle simu_tourelle(6,
+                              0,
+                              0,
+                              NULL,
+                              NULL);
+#endif
+
+  ///Periphériques
+  //Tourelle
+#ifdef SIMULATION
+  Tourelle tourelle(communication_bus, 
+                    simu_tourelle,
+                    0x30, //je sait plus
+                    6);
+#else 
+  Tourelle tourelle(communication_bus, 
+                    0x30, //je sait plus
+                    6);
+#endif 
 
   double objX    =(rand()%2500)-1250;
   double objY    =(rand()%1500)-750;

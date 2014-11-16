@@ -1,10 +1,19 @@
 
 #include "tourelle.hpp"
 
-Tourelle::Tourelle(i2c_bus&  bus, uint8_t slave_addr, int my_nbr_mesures) :
-i2c_slave(bus, slave_addr),
-nbr_mesures(my_nbr_mesures),
-error(0)
+Tourelle::Tourelle(i2c_bus& bus, 
+#ifdef SIMULATION
+                   Simu_tourelle &my_simu_tourelle,
+#endif
+                   uint8_t slave_addr, 
+                   int my_nbr_mesures) :
+  i2c_slave(bus, slave_addr),
+  nbr_mesures(my_nbr_mesures),
+  error(0)
+#ifdef SIMULATION
+  ,simu_tourelle(&my_simu_tourelle)
+#endif
+
 {
   distances=(double*)malloc(sizeof(double)*nbr_mesures);
   angles=(double*)malloc(sizeof(double)*nbr_mesures);
@@ -33,6 +42,10 @@ int Tourelle::get_datas() {
     angles[i]=((double)(datas[i].angle))/10.0;
   }
   free(datas);
+
+#ifdef SIMULATION
+  simu_tourelle->send_datas(distances, angles);
+#endif
   return 0;
 }
 
@@ -41,6 +54,9 @@ int Tourelle::get_error() {
   int r=0;
   r=fast_read('E', &error, 1);
   if (r==-1) return r;
+#ifdef SIMULATION
+  simu_tourelle->send_error(error);
+#endif
   return error;
 }
 
@@ -50,6 +66,9 @@ int Tourelle::set_instruction(uint8_t instruction) {
   cmd[0] = 'I';
   cmd[1] = instruction;
   r = write(cmd, 2);
+#ifdef SIMULATION
+  simu_tourelle->recv_instruction(instruction);
+#endif
   return r;
 }
 

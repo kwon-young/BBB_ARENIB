@@ -27,6 +27,15 @@ Simu_tourelle::Simu_tourelle(int     my_simu_nbr_mesures,
   }
 }
 
+Simu_tourelle::Simu_tourelle(const Simu_tourelle &my_simu_tourelle) :
+  simu_nbr_mesures(my_simu_tourelle.simu_nbr_mesures),
+  simu_error(my_simu_tourelle.simu_error),
+  simu_instruction(my_simu_tourelle.simu_instruction),
+  simu_distances(my_simu_tourelle.simu_distances),
+  simu_angles(my_simu_tourelle.simu_angles)
+{
+}
+
 Simu_tourelle::~Simu_tourelle() {
   free(simu_distances);
   free(simu_angles);
@@ -53,4 +62,5 @@ int Simu_tourelle::recv_instruction(const uint8_t instruction) {
 int Simu_tourelle::update() {
   return 0;
 }
+
 
