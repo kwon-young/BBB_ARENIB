@@ -120,7 +120,7 @@ class Motorisation : public i2c_slave {
       ///\param[out] myCommande reference sur la structure commande de destination
       int i2c_packetToCommande(const I2c_packet &myI2c_packet, Commande &myCommande);
 
-      static void updatePosition(Motorisation *motorisation);
+      static void update_thread(Motorisation *motorisation);
 
       Commande commande_etat_courant; //!<structure qui permet de decrire les differents ordres que l'on veut affecter au robot
       Commande commande_ordre; //!<structure qui decrit l'etat et la position du robot

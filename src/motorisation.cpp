@@ -17,7 +17,7 @@ Motorisation::Motorisation(i2c_bus &mybus,
                            double posY, 
                            double posTheta) :
 i2c_slave(mybus, slave_addr),
-t_updatePosition(&Motorisation::updatePosition, this)
+t_updatePosition(&Motorisation::update_thread, this)
 #ifdef SIMULATION
 ,simu_asserv(&my_simu_asserv)
 #endif
@@ -189,7 +189,7 @@ int Motorisation::i2c_packetToCommande(const I2c_packet &myI2c_packet,
   return 0;
 }
 
-void Motorisation::updatePosition(Motorisation *motorisation) {
+void Motorisation::update_thread(Motorisation *motorisation) {
   while(!t_ragequit) {
     if (motorisation->get_position_state() == -1)
     {
