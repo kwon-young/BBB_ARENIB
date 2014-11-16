@@ -94,7 +94,7 @@ int main (int argc, char *argv[]) {
 #endif 
   //creation d'un thread de mise a jour de la position et de l'etat du robot
   
-  sf::Thread t_updatePosition(Motorisation::updatePosition, &motorisation);
+  sf::Thread t_updatePosition(Motorisation::update_thread, &motorisation);
   t_updatePosition.launch();
 
   double objX    =(rand()%3000)-1500;
@@ -106,11 +106,14 @@ int main (int argc, char *argv[]) {
   //double t=0;
   while (!ragequit) {
 
+    motorisation.get_mutex().lock();
     etat = motorisation.commande_etat_courant.Type;
     position_x = motorisation.commande_etat_courant.X;
     position_y = motorisation.commande_etat_courant.Y;
     theta = motorisation.commande_etat_courant.Theta*180.0*10.0/PI;
-
+    motorisation.get_mutex().unlock();
+    
+    
     packet.clear();
 
     packet << (sf::Uint8) 0x22;  //magic       // uint8

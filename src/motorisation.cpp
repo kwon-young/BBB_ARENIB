@@ -187,12 +187,14 @@ int Motorisation::i2c_packetToCommande(const I2c_packet &myI2c_packet,
   return 0;
 }
 
-void Motorisation::updatePosition(Motorisation *motorisation) {
+void Motorisation::update_thread(Motorisation *motorisation) {
   while(!t_ragequit) {
+    motorisation->get_mutex().lock(); //Si on fait pas sa ça sert a rien lol...
     if (motorisation->get_position_state() == -1)
     {
       std::cerr << "Error i2c motorisation.get_position_state()" << std::endl;
     }
+    motorisation->get_mutex().unlock();
     sf::sleep(sf::milliseconds(5));
   }
 }
