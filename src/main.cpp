@@ -43,7 +43,7 @@ int main (int argc, char *argv[]) {
   ///Communication
   //Network
   std::string interface_ip="127.0.0.1";
-  std::string robot_name="EchecCritique"; 
+  std::string robot_name="EchecCritique";
 
   int next_for=0;
   for (int i=1; i<argc ; i++)
@@ -67,9 +67,9 @@ int main (int argc, char *argv[]) {
     }
     else if (next_for == NEXT_ROBOTNAME)
     {
-      robot_name=argv[i];     
+      robot_name=argv[i];
     }
-    else 
+    else
     {
       printf("Useless %s: ",argv[i]);
     }
@@ -78,7 +78,7 @@ int main (int argc, char *argv[]) {
   sf::Packet packet;
   socket.setBlocking(false);
 
-  //i2c 
+  //i2c
 #ifdef SIMULATION
   i2c_bus communication_bus(4.7*8); //4.7usec/bit selon wikipedia
 #else
@@ -112,21 +112,21 @@ int main (int argc, char *argv[]) {
   ///Periphériques
   //Motorisation
 #ifdef SIMULATION
-  Motorisation motorisation(communication_bus, 
+  Motorisation motorisation(communication_bus,
       0x42, //je sait plus
       simu_motorisation,
-      etat, 
-      position_x, 
-      position_y, 
+      etat,
+      position_x,
+      position_y,
       (theta/10.0)*PI/180.0);
-#else 
-  Motorisation motorisation(communication_bus, 
+#else
+  Motorisation motorisation(communication_bus,
       0x42, //je sait plus
-      etat, 
-      position_x, 
-      position_y, 
+      etat,
+      position_x,
+      position_y,
       (theta/10.0)*PI/180.0);
-#endif 
+#endif
 
   ///Simulation
   //Tourelle
@@ -141,15 +141,15 @@ int main (int argc, char *argv[]) {
   ///Periphériques
   //Tourelle
 #ifdef SIMULATION
-  Tourelle tourelle(communication_bus, 
+  Tourelle tourelle(communication_bus,
                     simu_tourelle,
                     0x30, //je sait plus
                     6);
-#else 
-  Tourelle tourelle(communication_bus, 
+#else
+  Tourelle tourelle(communication_bus,
                     0x30, //je sait plus
                     6);
-#endif 
+#endif
 
   double objX    =(rand()%2500)-1250;
   double objY    =(rand()%1500)-750;
@@ -198,6 +198,8 @@ int main (int argc, char *argv[]) {
 
 }
 
-
+int ActionLaPlusRentable(double &objX, double &objY, double &objTheta) {
+return 0;
+}
 
 
