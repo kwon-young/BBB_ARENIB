@@ -18,6 +18,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <time.h>
+#include <math.h>
 #define NEXT_IP 1
 #define NEXT_ROBOTNAME 2
 
@@ -165,7 +166,7 @@ int main (int argc, char *argv[]) {
       //objY    =(rand()%1500)-750;
       //objTheta=(rand()%3600)*PI/(180.0*10.0);
       //std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
-	  ActionLaPlusRentable(objX, objY, objTheta);
+	  //ActionLaPlusRentable(objX, objY, objTheta);
 	  motorisation.avance(1000, 800, 0);
     }
 
@@ -198,8 +199,59 @@ int main (int argc, char *argv[]) {
 
 }
 
-int ActionLaPlusRentable(double &objX, double &objY, double &objTheta) {
-return 0;
+int ActionLaPlusRentable(double tab[], double index[], Motorisation &motorisation)  //tab est un tableau qui contient les coordonnées et le poids de l'action (cb de point ça rapporte)
+{                                                       //index => index ou se trouve x, y et théta du plus rentable au moins rentable
+    sf::Uint8 etat=0;                   //Déclaration
+    sf::Int16 position_x=0; //mm
+    sf::Int16 position_y=0; //mm
+    sf::Int16 theta=0;
+    int lenght = sizeof(tab)/sizeof(double);
+    int lenght2 = (sizeof(index)/sizeof(double))*2;
+    double critere[lenght2];
+    sf::Uint8 i=0, j=0, t, mini;
+
+    motorisation.get_position_HN(etat, position_x, position_y, theta);  //position du robot
+
+    index[0] = sqrt((tab[i]-position_x)*(tab[i]-position_x) + (tab[i+1]-position_y)*(tab[i+1]-position_y))/tab[i+3] + (tab[i+2]-theta);
+
+    while(i<lenght && j<lenght2)
+    {
+        critere[j] = i;
+        critere[j+1] = sqrt((tab[i]-position_x)*(tab[i]-position_x) + (tab[i+1]-position_y)*(tab[i+1]-position_y))/tab[i+3] + (tab[i+2]-theta); //calcul du critere en fonction de la distance des points et de theta
+        i+=4;
+        j+=2;
+    }
+
+    for(i=1;i<lenght2;i+=2)
+    {
+        mini = i;
+        for(j=i+2;j<lenght2;j+=2)
+        {
+            if(critere[j] < critere[mini])
+            {
+                mini = j;
+            }
+        }
+        critere[mini] = t;
+        t = critere[mini];
+        critere[mini] = t;
+
+        critere[mini-1] = t;
+        t = critere[mini-1];
+        critere[mini-1] = t;
+    }
+
+    i=0;
+    j=0;
+
+    while(i<lenght2 && j<lenght)
+    {
+        index[j] = critere[i];
+        i+=2;
+        j++;
+    }
+
+    return 1;
 }
 
 

@@ -24,7 +24,7 @@ ifeq ($(DEBUG), yes)
   LDFLAGS= -lsfml-network-s-d -lsfml-system-s-d
 else 
   CXXFLAGS+= -O2
-  LDFLAGS= -lsfml-network-s -lsfml-system-s
+  LDFLAGS= -lsfml-network-s -lsfml-system-s -lm
 endif
 
 ifeq ($(CIBLE), simu)
