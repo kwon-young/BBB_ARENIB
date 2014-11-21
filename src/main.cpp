@@ -76,11 +76,6 @@ int main (int argc, char *argv[]) {
     }
   }
   sf::UdpSocket socket;
-  if (socket.bind(2222) != sf::Socket::Done)
-  {
-    std::cerr << "olol cannot bind to 2222" << std::endl;
-    return 1;
-  }
   sf::Packet packet;
   socket.setBlocking(false);
 
