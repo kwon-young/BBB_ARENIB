@@ -76,6 +76,11 @@ int main (int argc, char *argv[]) {
     }
   }
   sf::UdpSocket socket;
+  if (socket.bind(2222) != sf::Socket::Done)
+  {
+    std::cerr << "olol cannot bind to 2222" << std::endl;
+    return 1;
+  }
   sf::Packet packet;
   socket.setBlocking(false);
 
@@ -161,14 +166,14 @@ int main (int argc, char *argv[]) {
   //double t=0;
   while (!ragequit) {
     motorisation.get_position_HN(etat, position_x, position_y, theta);
-    if (etat==STOP) {
+    /*if (etat==STOP) {
       objX    =(rand()%2500)-1250;
       objY    =(rand()%1500)-750;
       objTheta=(rand()%3600)*PI/(180.0*10.0);
       std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
 	  //ActionLaPlusRentable(objX, objY, objTheta);
       motorisation.avance(objX, objY, objTheta);
-    }
+    }*/
 
 
     packet.clear();
@@ -176,7 +181,7 @@ int main (int argc, char *argv[]) {
     packet << (sf::Uint8) 0x22;  //magic       // uint8
     packet << (sf::Uint8) 0x1; //nb_robots
     packet << robot_name;                      // std::string
-    packet << (sf::Uint16) 0; //flags
+    packet << (sf::Uint16) 0x4000; //flags
     packet << (sf::Uint8) etat;                // uint8
     packet << (sf::Int16) position_x; //mm     // int16
     packet << (sf::Int16) position_y; //mm     // int16
@@ -188,6 +193,40 @@ int main (int argc, char *argv[]) {
     //packet << extra;  //vous pouvez ajouter des données relative à votre robot
 
     socket.send(packet, sf::IpAddress(interface_ip), 2222);
+    
+    sf::IpAddress fromAddr;
+    unsigned short fromPort;
+    sf::Uint8 magic;
+    sf::Socket::Status status;
+    sf::Int16 target_x;
+    sf::Int16 target_y;
+    sf::Int16 target_theta;
+    do {
+      sf::Packet packet;
+      status = socket.receive(packet,fromAddr,fromPort);
+      switch (status)
+      {
+        case sf::Socket::Done:
+          if (!(packet >> magic) || magic != 0x21) break;
+          if (!(packet >> target_x)) break;
+          if (!(packet >> target_y)) break;
+          if (!(packet >> target_theta)) break;
+          objX    = target_x;
+          objY    = target_y;
+          objTheta= target_theta*PI/1800.f;
+          motorisation.avance(objX, objY, objTheta);
+          break;
+        case sf::Socket::Error:
+          std::cerr << "Socket error !!!" << std::endl;
+          break;
+        case sf::Socket::Disconnected:
+          std::cerr << "Socket disconnected !!!" << std::endl;
+          break;
+        default:
+          break;
+      }
+    } while (status==sf::Socket::Done);
+    
     sf::sleep(sf::milliseconds(5));
     
     
