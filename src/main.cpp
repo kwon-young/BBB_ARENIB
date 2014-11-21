@@ -91,15 +91,15 @@ int main (int argc, char *argv[]) {
   sf::Int16 position_x=(rand()%2500)-1250; //mm
   sf::Int16 position_y=(rand()%1500)-750; //mm
   sf::Int16 theta=rand()%3600;      //degrees*10 [0, 3600]
-  /*
-     sf::Int16 position_x=0; //mm
-     sf::Int16 position_y=0; //mm
-     sf::Int16 theta=0;      //degrees*10 [0, 3600]
-     */
-  sf::Uint8 color_r=255;
-  sf::Uint8 color_g=0;
-  sf::Uint8 color_b=0;
 
+  sf::Uint8 color_r=115;
+  sf::Uint8 color_g=136;
+  sf::Uint8 color_b=219;
+  if (robot_name=="EchecCritique2") {
+    color_r=255;
+    color_g=0;
+    color_b=0;
+  } 
   std::cout << position_x << " | " << position_y << " | " << theta<< std::endl;
   ///Simulation
   //Motorisation
