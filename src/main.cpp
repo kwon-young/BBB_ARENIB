@@ -174,6 +174,8 @@ int main (int argc, char *argv[]) {
     packet.clear();
 
     packet << (sf::Uint8) 0x22;  //magic       // uint8
+    packet << (sf::Uint8) 0x1; //nb_robots
+    packet << (sf::Uint16) 0; //flags
     packet << robot_name;                      // std::string
     packet << (sf::Uint8) etat;                // uint8
     packet << (sf::Int16) position_x; //mm     // int16
@@ -186,9 +188,10 @@ int main (int argc, char *argv[]) {
     //packet << extra;  //vous pouvez ajouter des données relative à votre robot
 
     socket.send(packet, sf::IpAddress(interface_ip), 2222);
-
-#ifdef SIMULATION
     sf::sleep(sf::milliseconds(5));
+    
+    
+#ifdef SIMULATION
     simu_motorisation.update();
 #endif
   }
