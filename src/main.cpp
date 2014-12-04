@@ -162,10 +162,10 @@ int main (int argc, char *argv[]) {
   while (!ragequit) {
     motorisation.get_position_HN(etat, position_x, position_y, theta);
     if (etat==STOP) {
-      //objX    =(rand()%2500)-1250;
-      //objY    =(rand()%1500)-750;
-      //objTheta=(rand()%3600)*PI/(180.0*10.0);
-      //std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
+      objX    =(rand()%2500)-1250;
+      objY    =(rand()%1500)-750;
+      objTheta=(rand()%3600)*PI/(180.0*10.0);
+      std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
 	  //ActionLaPlusRentable(objX, objY, objTheta);
 	  motorisation.avance(1000, 800, 0);
     }
@@ -253,5 +253,4 @@ int ActionLaPlusRentable(double tab[], double index[], Motorisation &motorisatio
 
     return 1;
 }
-
 
