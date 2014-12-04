@@ -109,7 +109,6 @@ int main (int argc, char *argv[]) {
       position_y,
       (theta/10.0)*PI/180.0);
 #endif
-
   ///Periphériques
   //Motorisation
 #ifdef SIMULATION
@@ -161,14 +160,14 @@ int main (int argc, char *argv[]) {
   //double t=0;
   while (!ragequit) {
     motorisation.get_position_HN(etat, position_x, position_y, theta);
-    /*if (etat==STOP) {
+    if (etat==STOP) {
       objX    =(rand()%2500)-1250;
       objY    =(rand()%1500)-750;
       objTheta=(rand()%3600)*PI/(180.0*10.0);
       std::cout << objX << " | " << objY << " | " << objTheta << std::endl;
-	  ActionLaPlusRentable(objX, objY, objTheta);
+	  //ActionLaPlusRentable(objX, objY, objTheta);
       motorisation.avance(objX, objY, objTheta);
-    }*/
+    }
 
 
     packet.clear();
@@ -236,58 +235,55 @@ int main (int argc, char *argv[]) {
 
 }
 
-int ActionLaPlusRentable(double tab[], double index[], Motorisation &motorisation)  //tab est un tableau qui contient les coordonnées et le poids de l'action (cb de point ça rapporte)
-{                                                       //index => index ou se trouve x, y et théta du plus rentable au moins rentable
-    sf::Uint8 etat=0;                   //Déclaration
+typedef struct {
+    double x;
+    double y;
+    double theta;
+    double lastCritere;
+    int points;
+    } pointsInteret;
+
+
+void computeCritere(Motorisation &motorisation, pointsInteret* pts, unsigned n)
+{
+    sf::Uint8 etat=0;       //Déclaration
     sf::Int16 position_x=0; //mm
     sf::Int16 position_y=0; //mm
     sf::Int16 theta=0;
-    int lenght = sizeof(tab)/sizeof(double);
-    int lenght2 = (sizeof(index)/sizeof(double))*2;
-    double critere[lenght2];
-    sf::Uint8 i=0, j=0, t, mini;
+    motorisation.get_position_HN(etat, position_x, position_y, theta);
 
-    motorisation.get_position_HN(etat, position_x, position_y, theta);  //position du robot
-
-    index[0] = sqrt((tab[i]-position_x)*(tab[i]-position_x) + (tab[i+1]-position_y)*(tab[i+1]-position_y))/tab[i+3] + (tab[i+2]-theta);
-
-    while(i<lenght && j<lenght2)
+    for (unsigned i=0; i<n; i++)
     {
-        critere[j] = i;
-        critere[j+1] = sqrt((tab[i]-position_x)*(tab[i]-position_x) + (tab[i+1]-position_y)*(tab[i+1]-position_y))/tab[i+3] + (tab[i+2]-theta); //calcul du critere en fonction de la distance des points et de theta
-        i+=4;
-        j+=2;
+        //calcul du critere en fonction de la distance des points et de theta
+        pts[i].lastCritere = sqrt((pts[i].x-position_x)*(pts[i].x-position_x) +
+                                  (pts[i].y-position_y)*(pts[i].y-position_y))/pts[i].points; //+ (pts[i+2]-theta);
+
+    }
+}
+//                                     in                        in                 out       in
+int ActionLaPlusRenptsle(Motorisation &motorisation, pointsInteret* pts, unsigned* index, unsigned n)  //pts est un ptsleau qui contient les coordonnées et le poids de l'action (cb de point ça rapporte)
+{                                                       //index => index ou se trouve x, y et théta du plus renptsle au moins renptsle
+    computeCritere(motorisation,pts,n);
+    unsigned i=0, j=0;
+    unsigned mini=0;
+    for (unsigned int i; i < n; i++) {
+        index[i]=i;
     }
 
-    for(i=1;i<lenght2;i+=2)
+    for(i=0;i<n;i++)
     {
-        mini = i;
-        for(j=i+2;j<lenght2;j+=2)
+        mini = index[i];
+        for(j=i+1;j<n;j++)
         {
-            if(critere[j] < critere[mini])
+            if(pts[index[j]].lastCritere < pts[mini].lastCritere)
             {
                 mini = j;
             }
         }
-        critere[mini] = t;
-        t = critere[mini];
-        critere[mini] = t;
-
-        critere[mini-1] = t;
-        t = critere[mini-1];
-        critere[mini-1] = t;
+        unsigned temp=index[i];
+        index[i]=mini;
+        index[mini]=temp;
     }
-
-    i=0;
-    j=0;
-
-    while(i<lenght2 && j<lenght)
-    {
-        index[j] = critere[i];
-        i+=2;
-        j++;
-    }
-
     return 1;
 }
 
